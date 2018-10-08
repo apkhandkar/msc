@@ -11,11 +11,8 @@ h : Eq.a => [a] -> [[a]]
 h . []      = []
 h . (x::xs) = [x] :: h.xs
 
-i : Eq.a => Int -> [[a]] -> [a] -> [[a]]
-i . n . xs . ys | n > length.ys = []
-i . 0 . xs . ys                 = []
-i . 1 . xs . ys                 = xs
-i . n . xs . ys                 = g.(i.(n-1).xs.ys).ys
-
 perms : Eq.a => Int -> [a] -> [[a]]
-perms . n . xs = i . n . (h.xs) . xs
+perms . n . xs | n > length.xs  = []
+perms . 0 . xs                  = []
+perms . 1 . xs                  = h.xs
+perms . n . xs                  = g.(perms.(n-1).xs).xs
