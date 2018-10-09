@@ -22,8 +22,10 @@ exists . a . []                   = False
 exists . a . (x::xs) | a == x     = True
                      | otherwise  = exists.a.xs
 
-
 toset : Eq.a => [a] -> [a]
 toset . []                    = []
 toset . (x::xs) | exists.x.xs = toset.xs
                 | otherwise   = x :: toset.xs
+
+setperms : Eq.a => Int -> [a] -> [[a]]
+setperms . n . xs = perms . n . (toset.xs)
