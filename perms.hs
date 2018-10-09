@@ -16,3 +16,14 @@ perms . n . xs | n > length.xs  = []
 perms . 0 . xs                  = []
 perms . 1 . xs                  = h.xs
 perms . n . xs                  = g.(perms.(n-1).xs).xs
+
+exists : Eq.a => a -> [a] -> Bool
+exists . a . []                   = False
+exists . a . (x::xs) | a == x     = True
+                     | otherwise  = exists.a.xs
+
+
+toset : Eq.a => [a] -> [a]
+toset . []                    = []
+toset . (x::xs) | exists.x.xs = toset.xs
+                | otherwise   = x :: toset.xs
