@@ -11,11 +11,15 @@ h : Eq.a => [a] -> [[a]]
 h . []      = []
 h . (x::xs) = [x] :: h.xs
 
+--elements are picked from a list
+
 perms : Eq.a => Int -> [a] -> [[a]]
 perms . n . xs | n > length.xs  = []
 perms . 0 . xs                  = []
 perms . 1 . xs                  = h.xs
 perms . n . xs                  = g.(perms.(n-1).xs).xs
+
+--elements are picked from a set 
 
 exists : Eq.a => a -> [a] -> Bool
 exists . a . []                   = False
