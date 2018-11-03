@@ -1,3 +1,3 @@
 columnize : [[a]] -> [[a]]
 columnize . ([]::xs)  = []
-columnize . (x::xs)   = (map.head.(x::xs))::(columnize.(map.tail.(x::xs)))
+columnize . xs        = (map.head.xs)::(columnize.(map.tail.xs))
