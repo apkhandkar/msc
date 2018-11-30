@@ -1,32 +1,66 @@
---s,t,m,l wordpath
-
 wordList = ["SAAG","SABE","SABS","SACK","SACS","SADE","SADI","SADO","SADS","SAFE","SAFT","SAGA","SAGE","SAGO","SAGS","SAGY","SAIC","SAID","SAIL","SAIM","SAIN","SAIR","SAIS","SAKE","SAKI","SALE","SALL","SALP","SALS","SALT","SAMA","SAME","SAMP","SAMS","SAND","SANE","SANG","SANK","SANS","SANT","SAPS","SARD","SARI","SARK","SARS","SASH","SASS","SATE","SATI","SAUL","SAUT","SAVE","SAVS","SAWN","SAWS","SAXE","SAYS","SCAB","SCAD","SCAG","SCAM","SCAN","SCAR","SCAT","SCAW","SCOG","SCOP","SCOT","SCOW","SCRY","SCUD","SCUG","SCUL","SCUM","SCUP","SCUR","SCUT","SCYE","SEAL","SEAM","SEAN","SEAR","SEAS","SEAT","SECH","SECO","SECS","SECT","SEED","SEEK","SEEL","SEEM","SEEN","SEEP","SEER","SEES","SEGO","SEGS","SEIF","SEIK","SEIL","SEIR","SEIS","SEKT","SELD","SELE","SELF","SELL","SELS","SEME","SEMI","SENA","SEND","SENE","SENS","SENT","SEPS","SEPT","SERA","SERE","SERF","SERK","SERR","SERS","SESE","SESH","SESS","SETA","SETS","SETT","SEWN","SEWS","SEXT","SEXY","SEYS","SHAD","SHAG","SHAH","SHAM","SHAN","SHAT","SHAW","SHAY","SHEA","SHED","SHES","SHET","SHEW","SHIM","SHIN","SHIP","SHIR","SHIT","SHIV","SHMO","SHOD","SHOE","SHOG","SHOO","SHOP","SHOT","SHOW","SHRI","SHUL","SHUN","SHUT","SHWA","SIAL","SIBB","SIBS","SICE","SICH","SICK","SICS","SIDA","SIDE","SIDH","SIEN","SIES","SIFT","SIGH","SIGN","SIJO","SIKA","SIKE","SILD","SILE","SILK","SILL","SILO","SILT","SIMA","SIMI","SIMP","SIMS","SIND","SINE","SING","SINH","SINK","SINS","SIPE","SIPS","SIRE","SIRI","SIRS","SISS","SIST","SITE","SITH","SITS","SITZ","SIZE","SIZY","SJOE","SKAG","SKAS","SKAT","SKAW","SKEE","SKEG","SKEN","SKEO","SKEP","SKER","SKET","SKEW","SKID","SKIM","SKIN","SKIO","SKIP","SKIS","SKIT","SKOL","SKRY","SKUA","SKUG","SKYF","SKYR","SLAB","SLAE","SLAG","SLAM","SLAP","SLAT","SLAW","SLAY","SLEB","SLED","SLEE","SLEW","SLEY","SLID","SLIM","SLIP","SLIT","SLOB","SLOE","SLOG","SLOP","SLOT","SLOW","SLUB","SLUE","SLUG","SLUM","SLUR","SLUT","SMEE","SMEW","SMIR","SMIT","SMOG","SMUG","SMUR","SMUT","SNAB","SNAG","SNAP","SNAR","SNAW","SNEB","SNED","SNEE","SNIB","SNIG","SNIP","SNIT","SNOB","SNOD","SNOG","SNOT","SNOW","SNUB","SNUG","SNYE","SOAK","SOAP","SOAR","SOBA","SOBS","SOCA","SOCK","SOCS","SODA","SODS","SOFA","SOFT","SOGS","SOHO","SOHS","SOIL","SOJA","SOKE","SOLA","SOLD","SOLE","SOLI","SOLO","SOLS","SOMA","SOME","SOMS","SOMY","SONE","SONG","SONS","SOOK","SOOL","SOOM","SOON","SOOP","SOOT","SOPH","SOPS","SORA","SORB","SORD","SORE","SORI","SORN","SORT","SOSS","SOTH","SOTS","SOUK","SOUL","SOUM","SOUP","SOUR","SOUS","SOUT","SOVS","SOWF","SOWL","SOWM","SOWN","SOWP","SOWS","SOYA","SOYS","SPAE","SPAG","SPAM","SPAN","SPAR","SPAS","SPAT","SPAW","SPAY","SPAZ","SPEC","SPED","SPEK","SPET","SPEW","SPIC","SPIE","SPIF","SPIK","SPIM","SPIN","SPIT","SPIV","SPOD","SPOT","SPRY","SPUD","SPUE","SPUG","SPUN","SPUR","SRIS","STAB","STAG","STAP","STAR","STAT","STAW","STAY","STED","STEM","STEN","STEP","STET","STEW","STEY","STIE","STIM","STIR","STOA","STOB","STOP","STOT","STOW","STUB","STUD","STUM","STUN","STYE","SUBA","SUBS","SUCH","SUCK","SUDD","SUDS","SUED","SUER","SUES","SUET","SUGH","SUGO","SUGS","SUID","SUIT","SUKH","SUKS","SULK","SULU","SUMO","SUMP","SUMS","SUMY","SUNG","SUNI","SUNK","SUNN","SUNS","SUPE","SUPS","SUQS","SURA","SURD","SURE","SURF","SUSS","SUSU","SWAB","SWAD","SWAG","SWAM","SWAN","SWAP","SWAT","SWAY","SWEE","SWEY","SWIG","SWIM","SWIZ","SWOB","SWOP","SWOT","SWUM","SYBO","SYCE","SYED","SYEN","SYES","SYKE","SYLI","SYNC","SYND","SYNE","SYPE","SYPH","TAAL","TABI","TABS","TABU","TACE","TACH","TACK","TACO","TACT","TADS","TAED","TAEL","TAES","TAGS","TAHA","TAHR","TAIG","TAIL","TAIN","TAIS","TAIT","TAKA","TAKE","TAKI","TAKS","TAKY","TALA","TALC","TALE","TALI","TALK","TALL","TAME","TAMP","TAMS","TANA","TANE","TANG","TANH","TANK","TANS","TAOS","TAPA","TAPE","TAPS","TAPU","TARA","TARE","TARN","TARO","TARP","TARS","TART","TASH","TASK","TASS","TATE","TATH","TATS","TATT","TATU","TAUS","TAUT","TAVA","TAVS","TAWA","TAWS","TAWT","TAXA","TAXI","TAYS","TEAD","TEAK","TEAL","TEAM","TEAR","TEAS","TEAT","TECH","TECS","TEDS","TEDY","TEED","TEEK","TEEL","TEEM","TEEN","TEER","TEES","TEFF","TEFS","TEGG","TEGS","TEGU","TEHR","TEIL","TEIN","TELA","TELD","TELE","TELL","TELS","TELT","TEME","TEMP","TEMS","TEND","TENE","TENS","TENT","TEPA","TERF","TERM","TERN","TEST","TETE","TETH","TETS","TEWS","TEXT","THAE","THAN","THAR","THAT","THAW","THEE","THEM","THEN","THEW","THEY","THIG","THIN","THIO","THIR","THIS","THON","THOU","THRO","THRU","THUD","THUG","THUS","TIAN","TIAR","TICE","TICH","TICK","TICS","TIDE","TIDS","TIDY","TIED","TIER","TIES","TIFF","TIFT","TIGE","TIGS","TIKA","TIKE","TIKI","TIKS","TILE","TILL","TILS","TILT","TIME","TINA","TIND","TINE","TING","TINK","TINS","TINT","TINY","TIPI","TIPS","TIPT","TIRE","TIRL","TIRO","TIRR","TITE","TITI","TITS","TIVY","TIZZ","TOAD","TOBY","TOCK","TOCO","TOCS","TODS","TODY","TOEA","TOED","TOES","TOEY","TOFF","TOFT","TOFU","TOGA","TOGE","TOGS","TOHO","TOIL","TOIT","TOKE","TOKO","TOLA","TOLD","TOLE","TOLL","TOLT","TOLU","TOMB","TOME","TOMO","TOMS","TONE","TONG","TONK","TONS","TONY","TOOK","TOOL","TOOM","TOON","TOOT","TOPE","TOPH","TOPI","TOPO","TOPS","TORA","TORC","TORE","TORI","TORN","TORO","TORR","TORS","TORT","TORY","TOSA","TOSE","TOSH","TOSS","TOST","TOTE","TOTS","TOUK","TOUN","TOUR","TOUT","TOWN","TOWS","TOWT","TOWY","TOYO","TOYS","TOZE","TRAD","TRAM","TRAP","TRAT","TRAY","TREE","TREF","TREK","TRES","TRET","TREW","TREY","TREZ","TRIE","TRIG","TRIM","TRIN","TRIO","TRIP","TROD","TROG","TRON","TROP","TROT","TROW","TROY","TRUE","TRUG","TRYE","TRYP","TSAR","TSKS","TUAN","TUBA","TUBE","TUBS","TUCK","TUFA","TUFF","TUFT","TUGS","TUIS","TULE","TUMP","TUMS","TUNA","TUND","TUNE","TUNG","TUNS","TUNY","TUPS","TURD","TURF","TURK","TURM","TURN","TUSH","TUSK","TUTS","TUTU","TUZZ","TWAE","TWAL","TWAS","TWAT","TWAY","TWEE","TWIG","TWIN","TWIT","TWOS","TYDE","TYED","TYEE","TYER","TYES","TYGS","TYIN","TYKE","TYMP","TYND","TYNE","TYPE","TYPO","TYPP","TYPY","TYRE","TYRO","TYTE","TZAR","MAAR","MAAS","MABE","MACE","MACH","MACK","MACS","MADE","MADS","MAES","MAGE","MAGG","MAGI","MAGS","MAHA","MAID","MAIK","MAIL","MAIM","MAIN","MAIR","MAKE","MAKI","MAKO","MAKS","MALA","MALE","MALI","MALL","MALM","MALS","MALT","MAMA","MAMS","MANA","MAND","MANE","MANG","MANI","MANO","MANS","MANY","MAPS","MARA","MARC","MARD","MARE","MARG","MARK","MARL","MARM","MARS","MART","MARY","MASA","MASE","MASH","MASK","MASS","MAST","MASU","MATE","MATH","MATS","MATT","MATY","MAUD","MAUL","MAUN","MAUT","MAWK","MAWN","MAWR","MAWS","MAXI","MAYA","MAYO","MAYS","MAZE","MAZY","MEAD","MEAL","MEAN","MEAT","MECK","MEDS","MEED","MEEK","MEER","MEES","MEET","MEFF","MEGA","MEGS","MEIN","MELA","MELD","MELL","MELS","MELT","MEME","MEMO","MEMS","MEND","MENE","MENG","MENO","MENT","MENU","MEOU","MEOW","MERC","MERE","MERI","MERK","MERL","MESA","MESE","MESH","MESS","META","METE","METH","METS","MEUS","MEVE","MEWL","MEWS","MEZE","MEZZ","MHOS","MIBS","MICA","MICE","MICH","MICK","MICO","MICS","MIDI","MIDS","MIEN","MIFF","MIGG","MIGS","MIHA","MIHI","MIKE","MILD","MILE","MILF","MILK","MILL","MILO","MILS","MILT","MIME","MINA","MIND","MINE","MING","MINI","MINK","MINO","MINT","MINX","MINY","MIPS","MIRE","MIRI","MIRK","MIRO","MIRS","MIRV","MIRY","MISE","MISO","MISS","MIST","MITE","MITT","MITY","MIXT","MIXY","MIZZ","MNAS","MOAI","MOAN","MOAS","MOAT","MOBE","MOBS","MOBY","MOCH","MOCK","MOCS","MODE","MODI","MODS","MOER","MOES","MOFO","MOGS","MOHR","MOIL","MOIT","MOJO","MOKE","MOKI","MOKO","MOLA","MOLD","MOLE","MOLL","MOLS","MOLT","MOLY","MOME","MOMI","MOMS","MONA","MONG","MONK","MONO","MONS","MONY","MOOD","MOOI","MOOK","MOOL","MOON","MOOP","MOOR","MOOS","MOOT","MOPE","MOPS","MOPY","MORA","MORE","MORN","MORS","MORT","MOSE","MOSH","MOSK","MOSS","MOST","MOTE","MOTH","MOTI","MOTS","MOTT","MOTU","MOUE","MOUP","MOUS","MOVE","MOWA","MOWN","MOWS","MOXA","MOYA","MOYL","MOYS","MOZE","MOZO","MOZZ","MUCH","MUCK","MUDS","MUFF","MUGG","MUGS","MUID","MUIL","MUIR","MULE","MULL","MUMM","MUMP","MUMS","MUMU","MUNG","MUNI","MUNS","MUNT","MUON","MURA","MURE","MURK","MURL","MURR","MUSE","MUSH","MUSK","MUSO","MUSS","MUST","MUTE","MUTI","MUTS","MUTT","MUZZ","MWAH","MYAL","MYCS","MYNA","MYTH","MYXO","MZEE","LABS","LACE","LACK","LACS","LACY","LADE","LADS","LADY","LAER","LAGS","LAHS","LAIC","LAID","LAIK","LAIN","LAIR","LAKE","LAKH","LAKY","LALL","LAMA","LAMB","LAME","LAMP","LAMS","LANA","LAND","LANE","LANG","LANK","LANT","LANX","LAPS","LARD","LARE","LARI","LARK","LARN","LARS","LASE","LASH","LASS","LAST","LATE","LATH","LATI","LATS","LATU","LAUD","LAUF","LAVA","LAVE","LAVS","LAWK","LAWN","LAWS","LAYS","LAZE","LAZO","LAZY","LEAD","LEAF","LEAK","LEAL","LEAM","LEAN","LEAP","LEAR","LEAS","LEAT","LECH","LEED","LEEK","LEEP","LEER","LEES","LEET","LEFT","LEGS","LEHR","LEIR","LEIS","LEKE","LEKS","LEKU","LEME","LEND","LENG","LENO","LENS","LENT","LEPS","LEPT","LERE","LERP","LESS","LEST","LETS","LEUD","LEVA","LEVE","LEVO","LEVY","LEWD","LEYS","LEZZ","LIAR","LIAS","LIBS","LICE","LICH","LICK","LIDO","LIDS","LIED","LIEF","LIEN","LIER","LIES","LIEU","LIFE","LIFT","LIGS","LIKE","LILL","LILO","LILT","LILY","LIMA","LIMB","LIME","LIMN","LIMO","LIMP","LIMY","LIND","LINE","LING","LINK","LINN","LINO","LINS","LINT","LINY","LION","LIPA","LIPE","LIPO","LIPS","LIRA","LIRE","LIRI","LIRK","LISK","LISP","LIST","LITE","LITH","LITS","LITU","LIVE","LOAD","LOAF","LOAM","LOAN","LOBE","LOBI","LOBO","LOBS","LOCA","LOCH","LOCI","LOCK","LOCO","LODE","LODS","LOFT","LOGE","LOGO","LOGS","LOGY","LOID","LOIN","LOIR","LOKE","LOLL","LOMA","LOME","LONE","LONG","LOOF","LOOK","LOOM","LOON","LOOP","LOOR","LOOS","LOOT","LOPE","LOPS","LORD","LORE","LORN","LORY","LOSE","LOSH","LOSS","LOST","LOTA","LOTE","LOTH","LOTI","LOTO","LOTS","LOUD","LOUN","LOUP","LOUR","LOUS","LOUT","LOVE","LOWE","LOWN","LOWP","LOWS","LOWT","LOYS","LUAU","LUBE","LUCE","LUCK","LUDE","LUDO","LUDS","LUES","LUFF","LUGE","LUGS","LUIT","LUKE","LULL","LULU","LUMA","LUMP","LUMS","LUNA","LUNE","LUNG","LUNK","LUNT","LUNY","LURE","LURK","LURS","LUSH","LUSK","LUST","LUTE","LUTZ","LUVS","LUXE","LWEI","LYAM","LYCH","LYES","LYME","LYMS","LYNE","LYNX","LYRA","LYRE","LYSE","LYTE"]
 
-dstElem : [Char] -> [Char] -> [Char]
-dstElem . []      . []                  = []
-dstElem . (x::xs) . (y::ys) | x/=y      = x :: dstElem.(xs).(ys)
-                            | otherwise = dstElem.(xs).(ys)
+--wordList = ["MAAR","MAAS","MABE","MACE","MACH","MACK","MACS","MADE","MADS","MAES","MAGE","MAGG","MAGI","MAGS","MAHA","MAID","MAIK","MAIL","MAIM","MAIN","MAIR","MAKE","MAKI","MAKO","MAKS","MALA","MALE","MALI","MALL","MALM","MALS","MALT","MAMA","MAMS","MANA","MAND","MANE","MANG","MANI","MANO","MANS","MANY","MAPS","MARA","MARC","MARD","MARE","MARG","MARK","MARL","MARM","MARS","MART","MARY","MASA","MASE","MASH","MASK","MASS","MAST","MASU","MATE","MATH","MATS","MATT","MATY","MAUD","MAUL","MAUN","MAUT","MAWK","MAWN","MAWR","MAWS","MAXI","MAYA","MAYO","MAYS","MAZE","MAZY","MEAD","MEAL","MEAN","MEAT","MECK","MEDS","MEED","MEEK","MEER","MEES","MEET","MEFF","MEGA","MEGS","MEIN","MELA","MELD","MELL","MELS","MELT","MEME","MEMO","MEMS","MEND","MENE","MENG","MENO","MENT","MENU","MEOU","MEOW","MERC","MERE","MERI","MERK","MERL","MESA","MESE","MESH","MESS","META","METE","METH","METS","MEUS","MEVE","MEWL","MEWS","MEZE","MEZZ","MHOS","MIBS","MICA","MICE","MICH","MICK","MICO","MICS","MIDI","MIDS","MIEN","MIFF","MIGG","MIGS","MIHA","MIHI","MIKE","MILD","MILE","MILF","MILK","MILL","MILO","MILS","MILT","MIME","MINA","MIND","MINE","MING","MINI","MINK","MINO","MINT","MINX","MINY","MIPS","MIRE","MIRI","MIRK","MIRO","MIRS","MIRV","MIRY","MISE","MISO","MISS","MIST","MITE","MITT","MITY","MIXT","MIXY","MIZZ","MNAS","MOAI","MOAN","MOAS","MOAT","MOBE","MOBS","MOBY","MOCH","MOCK","MOCS","MODE","MODI","MODS","MOER","MOES","MOFO","MOGS","MOHR","MOIL","MOIT","MOJO","MOKE","MOKI","MOKO","MOLA","MOLD","MOLE","MOLL","MOLS","MOLT","MOLY","MOME","MOMI","MOMS","MONA","MONG","MONK","MONO","MONS","MONY","MOOD","MOOI","MOOK","MOOL","MOON","MOOP","MOOR","MOOS","MOOT","MOPE","MOPS","MOPY","MORA","MORE","MORN","MORS","MORT","MOSE","MOSH","MOSK","MOSS","MOST","MOTE","MOTH","MOTI","MOTS","MOTT","MOTU","MOUE","MOUP","MOUS","MOVE","MOWA","MOWN","MOWS","MOXA","MOYA","MOYL","MOYS","MOZE","MOZO","MOZZ","MUCH","MUCK","MUDS","MUFF","MUGG","MUGS","MUID","MUIL","MUIR","MULE","MULL","MUMM","MUMP","MUMS","MUMU","MUNG","MUNI","MUNS","MUNT","MUON","MURA","MURE","MURK","MURL","MURR","MUSE","MUSH","MUSK","MUSO","MUSS","MUST","MUTE","MUTI","MUTS","MUTT","MUZZ","MWAH","MYAL","MYCS","MYNA","MYTH","MYXO","MZEE"]
 
-isEdge : [Char] -> [Char] -> Bool
-isEdge . xs . ys  | length.(dstElem.xs.ys) == 1 = True
-                  | otherwise                   = False
+dstElem :: [Char] -> [Char] -> [Char]
+dstElem  []       []                = []
+dstElem  (x:xs)  (y:ys) | x/=y      = x : dstElem (xs) (ys)
+                        | otherwise = dstElem (xs) (ys)
 
-getEdges : [Char] -> [[Char]] -> [([Char],[Char])]
-getEdges . x . []                       = []
-getEdges . x . (y::ys)  | x `isEdge` y  = (x,y) :: getEdges.(x).(ys)
-                        | otherwise     = getEdges.(x).(ys)
+isEdge :: [Char] -> [Char] -> Bool
+isEdge  xs  ys  | length (dstElem xs ys) == 1 = True
+                | otherwise                   = False
 
-computeGraph : [[Char]] -> [([Char],[Char])]
-computeGraph . []       = []
-computeGraph . (x::xs)  = getEdges.(x).(xs) ++ computeGraph.(xs)
+getEdges :: [Char] -> [[Char]] -> [([Char],[Char])]
+getEdges  x  []                       = []
+getEdges  x  (y:ys)  | x `isEdge` y  = (x,y) : getEdges (x) (ys)
+                      | otherwise     = getEdges (x) (ys)
 
-computedGraph = computeGraph.(wordList)
+computeGraph :: [[Char]] -> [([Char],[Char])]
+computeGraph  []        = []
+computeGraph  (x:xs)    = getEdges (x) (xs) ++ computeGraph (xs)
 
-getPaths : [Char] -> [([Char],[Char])] -> [[Char]]
-getPaths . start . graph = nextLists
-  where
-    curNodes = filter.(\(f,_)->f==start).graph
-    nextStarts = map.snd.curNodes
-    nextLists = if curNodes == []
-                then [[start]]
-                else map.((::).start).concat.map.(\nextStart->getPaths.nextStart.graph).nextStarts
+computedGraph = computeGraph (wordList)
+
+
+--finding paths from a node
+
+longestpathsfrom :: Eq a => a -> [(a,a)] -> [[a]]
+longestpathsfrom start graph = nextLists 
+    where
+      curNodes    = filter (\(f,_) -> f == start) graph
+      nextStarts  = map snd curNodes
+      nextLists   = if curNodes == []
+                      then [[start]]
+                      else map ((:) start) $ concat $ map (\nextStart -> longestpathsfrom nextStart graph) nextStarts
+
+_subpaths :: Eq a => [[a]] -> [a] -> [[a]]
+_subpaths [] [] = []
+_subpaths [] (x:(y:ys)) = _subpaths ((x:[y]):[]) ys
+_subpaths xs (y:ys) = _subpaths (xs++[(last xs)++[y]]) ys
+_subpaths xs []     = xs
+
+subpaths :: Eq a => [a] -> [[a]]
+subpaths path = _subpaths [] path
+
+_allpathsfrom :: Eq a => a -> [(a,a)] -> [[[a]]]
+_allpathsfrom start graph = map subpaths (longestpathsfrom start graph)
+
+_mergepaths :: Eq a => [[a]] -> [a]
+_mergepaths []      = []
+_mergepaths (x:xs)  = x ++ (_mergepaths xs)
+
+_rmdupaths :: Eq a => [a] -> [a]
+_rmdupaths []                   = []
+_rmdupaths (x:xs) | x `elem` xs = _rmdupaths xs
+                  | otherwise   = x : _rmdupaths xs
+
+allpathsfrom :: Eq a => a -> [(a,a)] -> [[a]]
+allpathsfrom start graph = _rmdupaths(_mergepaths(_allpathsfrom start graph))
+
+--finding paths from a node
+
+
+allWordPaths word = allpathsfrom word computedGraph
+
+wordPaths sword eword = filter (\wordpath -> last wordpath == eword) (allWordPaths sword)
