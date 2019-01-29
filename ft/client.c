@@ -53,16 +53,13 @@ int main(int argc, char ** argv)
   
   recv_mesg = (struct smsg*)malloc(sizeof(struct smsg));
 
-  int got_all = 0;
   int nblk, cblk, lblk_sz;
   struct cmsg * send_mesg = (struct cmsg*)malloc(sizeof(struct cmsg));
   int fd;
-  int rpc;
-  int lastpl;
   char temp_fname[256];
   struct stat st;
 
-  while(!got_all) {
+  while(1) {
     n = recvfrom(sockfd, recv_mesg, sizeof(struct smsg), 0, (struct sockaddr*)&servaddr, (socklen_t*)&len);
     
     if(recv_mesg->sm_type < 0) {
@@ -75,8 +72,6 @@ int main(int argc, char ** argv)
       nblk = recv_mesg->sm_nblk;
       lblk_sz = atoi(recv_mesg->sm_body);
       cblk = 0;
-      rpc = 0;
-      lastpl = 0;
 
       // temporarily save the file as <filename>.<extension>.<ftdownload>
       strcpy(temp_fname, argv[2]);
@@ -85,39 +80,54 @@ int main(int argc, char ** argv)
       // check if temporary file for the same download exists from a previously
       // aborted transfer...
       if(access(temp_fname, F_OK) != -1) {
+
         // file exists
         // calculate how many full blocks were received, set 'cblk' to that value
         printf("This file seems to have been partially downloaded.\n");
         stat(temp_fname, &st);
         cblk = (int)floor((long double)st.st_size/1024);
         printf("Size downloaded: ~%dKiB. Attempting to resume download...\n", cblk);
+        
         // open the file
         if((fd = open(temp_fname, O_WRONLY, 0777)) < 0) {
+  
           fprintf(stderr, "Error: Can't open temporary download file\n");
           send_mesg->cm_type = -1;
           exit(-1);
+
         } else {
+
           // advance the file pointer to the end of last fully received block:
           if(lseek(fd, (cblk*1024), SEEK_SET) < 0) {
+
             fprintf(stderr, "Error: Can't resume download from temporary file\n");
             send_mesg->cm_type = -1;
+
           } else {
+
             printf("Downloading...\n");
             send_mesg->cm_type = 1;
             send_mesg->cm_cblk = cblk;
+
           }
         } 
+
       } else {
+
         // doesn't exist, go on and create it
         if((fd = open(temp_fname, O_CREAT|O_WRONLY, 0777)) < 0) {
+
           // file couldn't be opened/created
           fprintf(stderr, "Error: Can't write file to disk\n");
           send_mesg->cm_type = -1;
+        
         } else {
+
           //file was opened succesfully
           printf("Downloading %s (~%dKiB)\n", argv[2], nblk);
           send_mesg->cm_type = 1;
           send_mesg->cm_cblk = cblk;
+        
         }
       }
   
@@ -127,57 +137,43 @@ int main(int argc, char ** argv)
         exit(-1);
       }
 
-/*
-
-      if(argc == 4) {
-        fd = open(argv[3], O_CREAT|O_WRONLY, 0777);
-        printf("Saving '%s' (~%dKB) as '%s'\n", argv[2], nblk, argv[3]);
-      } else if(argc == 3){
-        fd = open(argv[2], O_CREAT|O_WRONLY, 0777);
-        printf("Fetching '%s' (~%dKB)\n", argv[2], nblk);
-      } else {
-        printf("Wrong argument format\n");
-        exit(-1);
-      }
-
-*/ 
 
 
-/*
-      int i;
-      for(i=0; i<20; i++) {
-        if(i==0)
-          printf("0%%");
-        else if(i==15)
-          printf("100%%");
-        else 
-          printf(" ");
-      }
-
-      printf("\n");
-*/
 
 
     } else if(recv_mesg->sm_type == 1) {
+
+      if(recv_mesg->sm_nblk == cblk) {
+        // server sent the block that was requested
+        cblk += 1;
+        if(cblk == nblk) {
+          // received the last block
+          write(fd, recv_mesg->sm_body, lblk_sz);
+          rename(temp_fname, argv[argc-1]);
+          printf("Download Completed. ");
+          printf("Saved as: %s\n", argv[argc-1]);
+          close(fd);
+  
+          exit(0);
+        } else {
+          write(fd, recv_mesg->sm_body, 1024);
+        }
+      }
+
+      // if the server sends a block other than the one that was requested, the client
+      // won't write the block to disk and keep asking for the correct block    
+      send_mesg->cm_type = 1;
+      send_mesg->cm_cblk = cblk;
+      sendto(sockfd, send_mesg, sizeof(struct cmsg), 0, (const struct sockaddr*)&servaddr, len);
+
+/*
+    
       // send acknowledgement
       cblk += 1;
       send_mesg->cm_type = 1;
       send_mesg->cm_cblk = cblk;
       sendto(sockfd, send_mesg, sizeof(struct cmsg), 0, (const struct sockaddr*)&servaddr, len);
 
-/*
-      // calculate percentage of transfer completed
-      rpc = (int)floor(((float)cblk/nblk)*100);
-*/
-
-      
-/*
-      if(rpc%5 == 0 && lastpl != rpc) {
-        printf("-");
-        fflush(stdout);
-        lastpl = rpc;
-      } 
-*/
       if(cblk==nblk) {
         // received the last block, write the block and exit succesfully!
         write(fd, recv_mesg->sm_body, lblk_sz);
@@ -192,7 +188,7 @@ int main(int argc, char ** argv)
         // write received block to output file
         write(fd, recv_mesg->sm_body, 1024);
       }
-      
+*/      
     } else {
       printf("Unknown response\n");
     }
