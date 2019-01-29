@@ -93,7 +93,6 @@ int main(int argc, char ** argv)
   
           fprintf(stderr, "Error: Can't open temporary download file\n");
           send_mesg->cm_type = -1;
-          exit(-1);
 
         } else {
 
