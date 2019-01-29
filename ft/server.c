@@ -53,7 +53,8 @@ int main(int argc, char ** argv)
     len = sizeof(cliaddr);
     n = recvfrom(sockfd, recv_mesg, sizeof(struct cmsg), 0, (struct sockaddr*)&cliaddr, (socklen_t*)&len);
     
-    if(recv_mesg->cm_type==0) {
+    if(recv_mesg->cm_type == 0) {
+
       // client is requesting for a file
       printf("Client request for %s\n", recv_mesg->cm_body);
 
@@ -78,36 +79,66 @@ int main(int argc, char ** argv)
       // send number of blocks client should expect
       sendto(sockfd, send_mesg, sizeof(struct smsg), 0, (struct sockaddr*)&cliaddr, len);
       printf("Sending %s in %d blocks\n", recv_mesg->cm_body, nblk);
-    } else if(recv_mesg->cm_type==1) {
+
+    } else if(recv_mesg->cm_type == 1) {
+
       if((lablk = recv_mesg->cm_cblk) == 0) {
         printf("Starting file transfer...\n");
       }
+
+      if(recv_mesg->cm_cblk == nblk) {
+
+        // client acknowledged receipt of last block
+        printf("File sent succesfully.\n");
+        close(fd);
+        
+        nblk = 0;
+        lblk_sz = 0;
+
+      } else {
+        if((lseek(fd, 0, SEEK_CUR)/1024) != recv_mesg->cm_cblk) {
+      
+          // block to be read by server and block client is requesting do not match
+          // this might be because the client wants to resume an interrupted download
+          // jump to the requested block
+          lseek(fd, (recv_mesg->cm_cblk*1024), SEEK_SET); 
+          
+        } 
+
+        send_mesg->sm_type = 1;
+        send_mesg->sm_nblk = recv_mesg->cm_cblk;
+        read(fd, send_mesg->sm_body, 1024);
+        sendto(sockfd, send_mesg, sizeof(struct smsg), 0, (struct sockaddr*)&cliaddr, len);
+
+      }
+/*
       if((lseek(fd, 0, SEEK_CUR)/1024) == recv_mesg->cm_cblk) {
-        // previous block was properly sent
-        // proceed to send next block
+        // client acknowledges receipt of previous block and is asking for next block
         send_mesg->sm_type = 1;
         read(fd, send_mesg->sm_body, 1024);
         sendto(sockfd, send_mesg, sizeof(struct smsg), 0, (struct sockaddr*)&cliaddr, len);
       } else {
         if(recv_mesg->cm_cblk == nblk) {
-          // last block was acknowledged by the client
+          // client acknowledges receipt of last block
           printf("File sent succesfully!\n");
-          // reset server, ready to send another file
           close(fd);
           nblk = 0;
           lblk_sz = 0;
         } else {
-          // something went wrong
-          // quick fix to jump to block in case of aborted transfer
+          // block to be read by server and block client is requesting do not match
+          // this might be because client wants to resume an interrupted download
+          // jump to the requested block and start serving from that point
           send_mesg->sm_type = 1;
           lseek(fd, (recv_mesg->cm_cblk*1024), SEEK_SET);
           read(fd, send_mesg->sm_body, 1024);
           sendto(sockfd, send_mesg, sizeof(struct smsg), 0, (struct sockaddr*)&cliaddr, len);
         }
       }
+ */
     } else if(recv_mesg->cm_type == 2) {
       // unused message type
     } else if(recv_mesg->cm_type == -1) {
+
       printf("Client encountered fatal error, cancelling transfer\n");
       close(fd);
       nblk = 0;
