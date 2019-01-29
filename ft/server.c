@@ -98,11 +98,22 @@ int main(int argc, char ** argv)
           lblk_sz = 0;
         } else {
           // something went wrong
+          // quick fix to jump to block in case of aborted transfer
+          send_mesg->sm_type = 1;
+          lseek(fd, (recv_mesg->cm_cblk*1024), SEEK_SET);
+          read(fd, send_mesg->sm_body, 1024);
+          sendto(sockfd, send_mesg, sizeof(struct smsg), 0, (struct sockaddr*)&cliaddr, len);
         }
       }
-    } else if(recv_mesg->cm_type==2) {
+    } else if(recv_mesg->cm_type == 2) {
+      // unused message type
+    } else if(recv_mesg->cm_type == -1) {
+      printf("Client encountered fatal error, cancelling transfer\n");
+      close(fd);
+      nblk = 0;
+      lblk_sz = 0;
     } else {
-      printf("Bad request from client\n");
+      printf("Bad request format\n");
     }
   }
 
