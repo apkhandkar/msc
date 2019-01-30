@@ -29,8 +29,13 @@ int main(int argc, char ** argv)
   struct sockaddr_in servaddr, cliaddr;
   struct stat st;
 
+  if(argc != 2) {
+    printf("usage: server <port>\n");
+    exit(0);
+  }
+
   if((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-    perror("Socket Error");
+    perror("socket");
     exit(-1);
   }
 
@@ -38,13 +43,13 @@ int main(int argc, char ** argv)
   servaddr.sin_addr.s_addr = INADDR_ANY;
   servaddr.sin_port = htons(atoi(argv[1]));
 
-  printf("Starting server at port %d\n", atoi(argv[1]));
 
   if((bind(sockfd, (struct sockaddr*)&servaddr, sizeof(servaddr))) < 0) {
-    perror("Bind Error");
+    perror("bind");
     exit(-1);
   }
 
+  printf("started server @ port %d\n", atoi(argv[1]));
 
   struct cmsg * recv_mesg = (struct cmsg*)malloc(sizeof(struct cmsg));
   struct smsg * send_mesg = (struct smsg*)malloc(sizeof(struct smsg));
@@ -56,14 +61,14 @@ int main(int argc, char ** argv)
     if(recv_mesg->cm_type == 0) {
 
       // client is requesting for a file
-      printf("Client request for %s\n", recv_mesg->cm_body);
+      printf("client requested %s\n", recv_mesg->cm_body);
 
       if((fd = open(recv_mesg->cm_body, O_RDONLY)) < 0) {
-        fprintf(stderr, "File %s couldn't be opened - bad filename or file not found\n", recv_mesg->cm_body);
+        fprintf(stderr, "%s couldn't be opened; bad filename/file not found\n", recv_mesg->cm_body);
         send_mesg->sm_type = -1;
       } else {
         if(fstat(fd, &st) < 0) {
-          fprintf(stderr, "Information for file %s couldn't be retrieved\n", recv_mesg->cm_body);
+          fprintf(stderr, "couldn't get size of %s\n", recv_mesg->cm_body);
           send_mesg->sm_type = -1;
         } else {
           // calculate number of blocks file will be transferred in
@@ -78,18 +83,12 @@ int main(int argc, char ** argv)
       }
       // send number of blocks client should expect
       sendto(sockfd, send_mesg, sizeof(struct smsg), 0, (struct sockaddr*)&cliaddr, len);
-      printf("Sending %s in %d blocks\n", recv_mesg->cm_body, nblk);
+      printf("sending %s in %d blocks\n", recv_mesg->cm_body, nblk);
 
     } else if(recv_mesg->cm_type == 1) {
 
-      if((lablk = recv_mesg->cm_cblk) == 0) {
-        printf("Starting file transfer...\n");
-      }
-
       if(recv_mesg->cm_cblk == nblk) {
 
-        // client acknowledged receipt of last block
-        printf("File sent succesfully.\n");
         close(fd);
         
         nblk = 0;
@@ -114,12 +113,12 @@ int main(int argc, char ** argv)
 
     } else if(recv_mesg->cm_type == -1) {
 
-      printf("Client encountered error, cancelling transfer\n");
+      printf("client encountered error, cancelling transfer\n");
       close(fd);
       nblk = 0;
       lblk_sz = 0;
     } else {
-      printf("Bad request format\n");
+      printf("client: bad request format\n");
     }
   }
 
