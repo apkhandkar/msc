@@ -26,7 +26,11 @@ int main(int argc, char ** argv)
 {
   int sockfd, len, n;
   int rpc;
+/*
+#ifdef WITH-PROGBAR
   int lpc;
+#endif
+*/
   int nblk, cblk, lblk_sz;
   int fd;
   struct sockaddr_in servaddr;
@@ -36,8 +40,13 @@ int main(int argc, char ** argv)
   struct stat st;
   char temp_fname[256];
 
+  if(argc!=3 && argc!=4) {
+    fprintf(stdout, "usage: client <port> <file> [<saveas>]\n");
+    exit(0);
+  }
+
   if((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
-    perror("Socket Error");
+    perror("socket");
     exit(-1);
   }
 
@@ -53,11 +62,12 @@ int main(int argc, char ** argv)
   strcpy(init_msg.cm_body, argv[2]);
 
   if(sendto(sockfd, &init_msg, sizeof(struct cmsg), 0, (const struct sockaddr*)&servaddr, len) < 0) {
-    perror("sendto Error");
+    perror("sendto (initial)");
     exit(-1);
   }
   
   recv_mesg = (struct smsg*)malloc(sizeof(struct smsg));
+
 
 
   while(1) {
@@ -66,7 +76,7 @@ int main(int argc, char ** argv)
     if(recv_mesg->sm_type < 0) {
   
       //something went wrong @ the server
-      fprintf(stderr, "File error: The file doesn't exist on the server, or it cannot be served as of now\n");
+      fprintf(stderr, "server error: file not found, aborting download\n");
       exit(-1);
 
     } else if(recv_mesg->sm_type == 0) {
@@ -86,18 +96,18 @@ int main(int argc, char ** argv)
 
         // file exists
         // calculate how many full blocks were received, set 'cblk' to that value
-        printf("This file seems to have been partially downloaded. Resuming Download...\n");
+        printf("that file seems to have been partially downloaded...\n");
         stat(temp_fname, &st);
         cblk = (int)floor((long double)st.st_size/1024);
 
       // calculate percentage downloaded
       rpc = (int)(((float)cblk/nblk)*100);
-      printf("Already downloaded %d%%. Trying to resume from that point.\n", rpc);
+      printf("downloaded %d%%, download will resume from that point\n", rpc);
 
         // open the file
         if((fd = open(temp_fname, O_WRONLY, 0777)) < 0) {
   
-          fprintf(stderr, "Error: Can't open temporary download file\n");
+          perror("open (tempfile)");
           send_mesg->cm_type = -1;
 
         } else {
@@ -105,11 +115,12 @@ int main(int argc, char ** argv)
           // advance the file pointer to the end of last fully received block:
           if(lseek(fd, (cblk*1024), SEEK_SET) < 0) {
 
-            fprintf(stderr, "Error: Can't resume download from temporary file\n");
+            perror("lseek");
             send_mesg->cm_type = -1;
 
           } else {
 
+            printf("resuming download of %s - ~%dKiB left\n", argv[2], nblk-cblk);
             send_mesg->cm_type = 1;
             send_mesg->cm_cblk = cblk;
 
@@ -122,13 +133,13 @@ int main(int argc, char ** argv)
         if((fd = open(temp_fname, O_CREAT|O_WRONLY, 0777)) < 0) {
 
           // file couldn't be opened/created
-          fprintf(stderr, "Error: Can't write file to disk\n");
+          perror("open (newfile)");
           send_mesg->cm_type = -1;
         
         } else {
 
           //file was opened succesfully
-          printf("Downloading %s (~%dKiB)\n", argv[2], nblk);
+          printf("downloading %s (~%dKiB)\n", argv[2], nblk);
           send_mesg->cm_type = 1;
           send_mesg->cm_cblk = cblk;
         
@@ -142,6 +153,8 @@ int main(int argc, char ** argv)
         exit(-1);
       }
 
+/*
+#ifdef WITH-PROGBAR
       // set up progress bar
       lpc = 0;
       int i;
@@ -164,6 +177,8 @@ int main(int argc, char ** argv)
         }
       }
       fflush(stdout);
+#endif
+*/
 
 
     } else if(recv_mesg->sm_type == 1) {
@@ -175,14 +190,16 @@ int main(int argc, char ** argv)
           // received the last block
           write(fd, recv_mesg->sm_body, lblk_sz);
           rename(temp_fname, argv[argc-1]);
-          printf("\nDownload Completed. ");
-          printf("Saved as: %s\n", argv[argc-1]);
+          printf("\ndownload dompleted; ");
+          printf("saved as %s\n", argv[argc-1]);
           close(fd);
 
           exit(0);
         } else {
           write(fd, recv_mesg->sm_body, 1024);
 
+/*
+#ifdef WITH-PROGBAR
           // update the progress % and progress bar
           rpc = (int)(((float)cblk/nblk)*100);
           if(rpc%5==0 && lpc!=rpc) {
@@ -190,6 +207,8 @@ int main(int argc, char ** argv)
             lpc = rpc;
           }
           fflush(stdout);
+#endif
+*/
         }
       }
 
@@ -197,10 +216,14 @@ int main(int argc, char ** argv)
       // won't write the block to disk and keep asking for the correct block    
       send_mesg->cm_type = 1;
       send_mesg->cm_cblk = cblk;
-      sendto(sockfd, send_mesg, sizeof(struct cmsg), 0, (const struct sockaddr*)&servaddr, len);
+
+      if(sendto(sockfd, send_mesg, sizeof(struct cmsg), 0, (const struct sockaddr*)&servaddr, len) < 0) {
+        perror("sendto");
+        exit(-1);
+      }
 
     } else {
-      printf("Unknown response\n");
+      printf("server: unknown response\n");
     }
   }
 
