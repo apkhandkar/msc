@@ -59,21 +59,24 @@ int main(int argc, char ** argv)
   char temp_fname[256];
   struct stat st;
 
+  int rpc;
+  int lpc;
+
   while(1) {
     n = recvfrom(sockfd, recv_mesg, sizeof(struct smsg), 0, (struct sockaddr*)&servaddr, (socklen_t*)&len);
     
     if(recv_mesg->sm_type < 0) {
-      switch(recv_mesg->sm_type) {
-        case -1:  fprintf(stderr, "File error: The file doesn't exist on the server, or it cannot be served as of now\n");
-                  break;
-      }
+      //cswitch(recv_mesg->sm_type) {
+        /*case -1:*/  fprintf(stderr, "File error: The file doesn't exist on the server, or it cannot be served as of now\n");
+      //            break;
+      //}
       exit(-1);
     } else if(recv_mesg->sm_type == 0) {
       nblk = recv_mesg->sm_nblk;
       lblk_sz = atoi(recv_mesg->sm_body);
       cblk = 0;
 
-      // temporarily save the file as <filename>.<extension>.<ftdownload>
+      // temporarily save the file as <filename>.<extension>.ftdownload
       strcpy(temp_fname, argv[2]);
       strcat(temp_fname, ".ftdownload");
       
@@ -83,11 +86,19 @@ int main(int argc, char ** argv)
 
         // file exists
         // calculate how many full blocks were received, set 'cblk' to that value
-        printf("This file seems to have been partially downloaded.\n");
+        printf("This file seems to have been partially downloaded. Resuming Download...\n");
         stat(temp_fname, &st);
         cblk = (int)floor((long double)st.st_size/1024);
+        /*
         printf("Size downloaded: ~%dKiB. Attempting to resume download...\n", cblk);
-        
+        */
+
+      /**/
+      // calculate percentage downloaded
+      rpc = (int)(((float)cblk/nblk)*100);
+      printf("Already downloaded %d%%. Trying to resume from that point.\n", rpc);
+      /**/
+
         // open the file
         if((fd = open(temp_fname, O_WRONLY, 0777)) < 0) {
   
@@ -104,7 +115,7 @@ int main(int argc, char ** argv)
 
           } else {
 
-            printf("Downloading...\n");
+            // printf("Downloading...\n");
             send_mesg->cm_type = 1;
             send_mesg->cm_cblk = cblk;
 
@@ -130,14 +141,36 @@ int main(int argc, char ** argv)
         }
       }
   
+
       sendto(sockfd, send_mesg, sizeof(struct cmsg), 0, (const struct sockaddr*)&servaddr, len);
 
       if(send_mesg->cm_type < 0) { 
         exit(-1);
       }
 
-
-
+      // set up progress bar
+      // printf("%% done: %d\n", rpc);
+      lpc = 0;
+      int i;
+      for(i=0; i<19; i++) {
+        if(i == 0) {
+          printf("0%%");
+        } else if(i == 15) {
+          printf("100%%");
+        } else {
+          printf(" ");
+        }
+      }
+      printf("\n");
+      if(rpc == 0) {
+        printf("-");
+      }
+      for(i=0; i<rpc; i++) {
+        if(i%5 == 0) {
+          printf("-");
+        }
+      }
+      fflush(stdout);
 
 
     } else if(recv_mesg->sm_type == 1) {
@@ -149,13 +182,21 @@ int main(int argc, char ** argv)
           // received the last block
           write(fd, recv_mesg->sm_body, lblk_sz);
           rename(temp_fname, argv[argc-1]);
-          printf("Download Completed. ");
+          printf("\nDownload Completed. ");
           printf("Saved as: %s\n", argv[argc-1]);
           close(fd);
-  
+
           exit(0);
         } else {
           write(fd, recv_mesg->sm_body, 1024);
+
+          // update the progress % and progress bar
+          rpc = (int)(((float)cblk/nblk)*100);
+          if(rpc%5==0 && lpc!=rpc) {
+            printf("-");
+            lpc = rpc;
+          }
+          fflush(stdout);
         }
       }
 
