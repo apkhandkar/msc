@@ -25,10 +25,16 @@ struct smsg {
 int main(int argc, char ** argv)
 {
   int sockfd, len, n;
+  int rpc;
+  int lpc;
+  int nblk, cblk, lblk_sz;
+  int fd;
   struct sockaddr_in servaddr;
   struct cmsg init_msg;
   struct smsg * recv_mesg;
-
+  struct cmsg * send_mesg = (struct cmsg*)malloc(sizeof(struct cmsg));
+  struct stat st;
+  char temp_fname[256];
 
   if((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
     perror("Socket Error");
@@ -53,25 +59,19 @@ int main(int argc, char ** argv)
   
   recv_mesg = (struct smsg*)malloc(sizeof(struct smsg));
 
-  int nblk, cblk, lblk_sz;
-  struct cmsg * send_mesg = (struct cmsg*)malloc(sizeof(struct cmsg));
-  int fd;
-  char temp_fname[256];
-  struct stat st;
-
-  int rpc;
-  int lpc;
 
   while(1) {
     n = recvfrom(sockfd, recv_mesg, sizeof(struct smsg), 0, (struct sockaddr*)&servaddr, (socklen_t*)&len);
     
     if(recv_mesg->sm_type < 0) {
-      //cswitch(recv_mesg->sm_type) {
-        /*case -1:*/  fprintf(stderr, "File error: The file doesn't exist on the server, or it cannot be served as of now\n");
-      //            break;
-      //}
+  
+      //something went wrong @ the server
+      fprintf(stderr, "File error: The file doesn't exist on the server, or it cannot be served as of now\n");
       exit(-1);
+
     } else if(recv_mesg->sm_type == 0) {
+
+
       nblk = recv_mesg->sm_nblk;
       lblk_sz = atoi(recv_mesg->sm_body);
       cblk = 0;
@@ -89,15 +89,10 @@ int main(int argc, char ** argv)
         printf("This file seems to have been partially downloaded. Resuming Download...\n");
         stat(temp_fname, &st);
         cblk = (int)floor((long double)st.st_size/1024);
-        /*
-        printf("Size downloaded: ~%dKiB. Attempting to resume download...\n", cblk);
-        */
 
-      /**/
       // calculate percentage downloaded
       rpc = (int)(((float)cblk/nblk)*100);
       printf("Already downloaded %d%%. Trying to resume from that point.\n", rpc);
-      /**/
 
         // open the file
         if((fd = open(temp_fname, O_WRONLY, 0777)) < 0) {
@@ -115,7 +110,6 @@ int main(int argc, char ** argv)
 
           } else {
 
-            // printf("Downloading...\n");
             send_mesg->cm_type = 1;
             send_mesg->cm_cblk = cblk;
 
@@ -149,7 +143,6 @@ int main(int argc, char ** argv)
       }
 
       // set up progress bar
-      // printf("%% done: %d\n", rpc);
       lpc = 0;
       int i;
       for(i=0; i<19; i++) {
@@ -206,29 +199,6 @@ int main(int argc, char ** argv)
       send_mesg->cm_cblk = cblk;
       sendto(sockfd, send_mesg, sizeof(struct cmsg), 0, (const struct sockaddr*)&servaddr, len);
 
-/*
-    
-      // send acknowledgement
-      cblk += 1;
-      send_mesg->cm_type = 1;
-      send_mesg->cm_cblk = cblk;
-      sendto(sockfd, send_mesg, sizeof(struct cmsg), 0, (const struct sockaddr*)&servaddr, len);
-
-      if(cblk==nblk) {
-        // received the last block, write the block and exit succesfully!
-        write(fd, recv_mesg->sm_body, lblk_sz);
-        // rename the temp file to name user specified
-        rename(temp_fname, argv[argc-1]);
-        printf("Download Completed\n");
-        printf("Saved as: %s\n", argv[argc-1]);
-        close(fd);
-
-        exit(0);
-      } else {
-        // write received block to output file
-        write(fd, recv_mesg->sm_body, 1024);
-      }
-*/      
     } else {
       printf("Unknown response\n");
     }
@@ -237,24 +207,3 @@ int main(int argc, char ** argv)
 
   return 0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

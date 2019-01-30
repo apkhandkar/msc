@@ -24,7 +24,10 @@ struct smsg {
 int main(int argc, char ** argv)
 {
   int sockfd, len, n, fd;
+  int nblk, lblk_sz;
+  int lablk;
   struct sockaddr_in servaddr, cliaddr;
+  struct stat st;
 
   if((sockfd = socket(AF_INET, SOCK_DGRAM, 0)) < 0) {
     perror("Socket Error");
@@ -45,9 +48,6 @@ int main(int argc, char ** argv)
 
   struct cmsg * recv_mesg = (struct cmsg*)malloc(sizeof(struct cmsg));
   struct smsg * send_mesg = (struct smsg*)malloc(sizeof(struct smsg));
-  struct stat st;
-  int nblk, lblk_sz;
-  int lablk;
 
   while(1) {
     len = sizeof(cliaddr);
@@ -111,35 +111,10 @@ int main(int argc, char ** argv)
         sendto(sockfd, send_mesg, sizeof(struct smsg), 0, (struct sockaddr*)&cliaddr, len);
 
       }
-/*
-      if((lseek(fd, 0, SEEK_CUR)/1024) == recv_mesg->cm_cblk) {
-        // client acknowledges receipt of previous block and is asking for next block
-        send_mesg->sm_type = 1;
-        read(fd, send_mesg->sm_body, 1024);
-        sendto(sockfd, send_mesg, sizeof(struct smsg), 0, (struct sockaddr*)&cliaddr, len);
-      } else {
-        if(recv_mesg->cm_cblk == nblk) {
-          // client acknowledges receipt of last block
-          printf("File sent succesfully!\n");
-          close(fd);
-          nblk = 0;
-          lblk_sz = 0;
-        } else {
-          // block to be read by server and block client is requesting do not match
-          // this might be because client wants to resume an interrupted download
-          // jump to the requested block and start serving from that point
-          send_mesg->sm_type = 1;
-          lseek(fd, (recv_mesg->cm_cblk*1024), SEEK_SET);
-          read(fd, send_mesg->sm_body, 1024);
-          sendto(sockfd, send_mesg, sizeof(struct smsg), 0, (struct sockaddr*)&cliaddr, len);
-        }
-      }
- */
-    } else if(recv_mesg->cm_type == 2) {
-      // unused message type
+
     } else if(recv_mesg->cm_type == -1) {
 
-      printf("Client encountered fatal error, cancelling transfer\n");
+      printf("Client encountered error, cancelling transfer\n");
       close(fd);
       nblk = 0;
       lblk_sz = 0;
@@ -147,7 +122,6 @@ int main(int argc, char ** argv)
       printf("Bad request format\n");
     }
   }
-
 
   return 0;
 }
