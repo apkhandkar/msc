@@ -28,7 +28,7 @@
 
   note that:
     ft_create calls malloc()  internally to  perform  allocation
-    and should set ERRNO on failure
+    and should set errno on failure
 
 */
 
