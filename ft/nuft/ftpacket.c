@@ -15,7 +15,7 @@ ftpack ftpack_create(int type, void *data, ssize_t size)
   *ptype = type;
   *psize = size;
 
-  memcpy(pdata, data, size-1);
+  memcpy(pdata, data, size);
 
   return packdata;
 }
