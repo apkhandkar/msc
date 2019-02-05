@@ -26,6 +26,10 @@
     ftpack_size:    clumsy  combination  of  'ftpack_psize'  and 
                     'ftpack_dsize'
 
+  note that:
+    ft_create calls malloc()  internally to  perform  allocation
+    and should set ERRNO on failure
+
 */
 
 #ifndef FTPACKET_H
