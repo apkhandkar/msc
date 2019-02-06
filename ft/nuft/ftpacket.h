@@ -21,13 +21,8 @@
 
     ftpack_free:    free the specified packet
 
-  not compiled by default:
-  
-    ftpack_size:    clumsy  combination  of  'ftpack_psize'  and 
-                    'ftpack_dsize'
-
   note that:
-    ft_create calls malloc()  internally to  perform  allocation
+    ftpack_create calls malloc()  internally to  perform  allocation
     and should set errno on failure
 
 */
@@ -47,11 +42,11 @@ ssize_t ftpack_size(void *packet, int mode);
 
 typedef void * ftpack;
 
-ftpack ftpack_create(int type, void *data, ssize_t size);
+ftpack ftpack_create(uint8_t type, void *data, ssize_t size);
 ssize_t ftpack_psize(ftpack packet);
 ssize_t ftpack_dsize(ftpack packet);
-int ftpack_ptype(ftpack packet);
-void *ftpack_pdata(ftpack packet, void *writebuf, ssize_t size);
+uint8_t ftpack_ptype(ftpack packet);
+void *ftpack_pdata(ftpack packet);
 void ftpack_free(ftpack packet);
 
 #endif
