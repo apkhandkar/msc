@@ -1,16 +1,17 @@
 #include "ftpacket.h"
 
-ftpack ftpack_create(int type, void *data, ssize_t size)
+ftpack 
+ftpack_create(uint8_t type, void *data, ssize_t size)
 {
   void *packdata;
 
-  if((packdata = malloc(sizeof(int) + size + sizeof(ssize_t))) == NULL) {
+  if(((packdata = malloc(sizeof(uint8_t) + size + sizeof(ssize_t))) == NULL) || (size < 0)) {
     return NULL;
   }
 
-  int *ptype = (int*)packdata;
-  ssize_t *psize = (ssize_t*)(packdata + sizeof(int));
-  void *pdata = (packdata + sizeof(int) + sizeof(ssize_t));
+  uint8_t *ptype = (uint8_t*)packdata;
+  ssize_t *psize = (ssize_t*)(packdata + sizeof(uint8_t));
+  void *pdata = (packdata + sizeof(uint8_t) + sizeof(ssize_t));
 
   *ptype = type;
   *psize = size;
@@ -20,35 +21,20 @@ ftpack ftpack_create(int type, void *data, ssize_t size)
   return packdata;
 }
 
-/*
-ternary operator to obfuscate the code. heheh.
-#ifdef OLD_SIZE_FUNC
-ssize_t ftpack_size(void *packet, int mode)
-{
-  return (mode == WITH_HEADERS)
-    ? ((*(ssize_t*)(packet + sizeof(int))) + sizeof(int) + sizeof(ssize_t))
-    : (mode == WITHOUT_HEADERS)
-      ? (*(ssize_t*)(packet + sizeof(int)))
-      : -1;
-}
-#endif
-*/
-
-ssize_t ftpack_psize(ftpack packet) 
+ssize_t 
+ftpack_psize(ftpack packet) 
 { 
-  return ((*(ssize_t*)(packet + sizeof(int))) + sizeof(int) + sizeof(ssize_t));
+  return ((*(ssize_t*)(packet + sizeof(uint8_t))) + sizeof(uint8_t) + sizeof(ssize_t)); 
 }
 
-ssize_t ftpack_dsize(ftpack packet)
-{
-  return (*(ssize_t*)(packet + sizeof(int)));
-}
+ssize_t 
+ftpack_dsize(ftpack packet) { return (*(ssize_t*)(packet + sizeof(uint8_t))); }
 
-int ftpack_ptype(ftpack packet) { return (int)*((int*) packet); }
+uint8_t 
+ftpack_ptype(ftpack packet) { return (uint8_t)*((uint8_t*) packet); }
 
-void *ftpack_pdata(ftpack packet, void *writebuf, ssize_t size)
-{
-  return memcpy(writebuf, (packet + sizeof(int) + sizeof(ssize_t)), size);
-}
+void 
+*ftpack_pdata(ftpack packet) { return (packet + sizeof(uint8_t) + sizeof(ssize_t)); }
 
-void ftpack_free(ftpack packet) { return free(packet); }
+void 
+ftpack_free(ftpack packet) { return free(packet); }
