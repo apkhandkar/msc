@@ -13,6 +13,7 @@
 struct cmsg {
   int cm_type;
   int cm_cblk;
+  int cl_token;
   char cm_body[256];
 };
 
@@ -26,11 +27,9 @@ int main(int argc, char ** argv)
 {
   int sockfd, len, n;
   int rpc;
-/*
-#ifdef WITH-PROGBAR
+#ifdef WITHPROGBAR
   int lpc;
 #endif
-*/
   int nblk, cblk, lblk_sz;
   int fd;
   struct sockaddr_in servaddr;
@@ -39,6 +38,7 @@ int main(int argc, char ** argv)
   struct cmsg * send_mesg = (struct cmsg*)malloc(sizeof(struct cmsg));
   struct stat st;
   char temp_fname[256];
+  int mytoken;
 
   if(argc!=3 && argc!=4) {
     fprintf(stdout, "usage: client <port> <file> [<saveas>]\n");
@@ -83,7 +83,8 @@ int main(int argc, char ** argv)
 
 
       nblk = recv_mesg->sm_nblk;
-      lblk_sz = atoi(recv_mesg->sm_body);
+      sscanf(recv_mesg->sm_body, "%d %d", &lblk_sz, &mytoken);
+      printf("Got token: %d\n", mytoken);
       cblk = 0;
 
       // temporarily save the file as <filename>.<extension>.ftdownload
@@ -141,6 +142,7 @@ int main(int argc, char ** argv)
           //file was opened succesfully
           printf("downloading %s (~%dKiB)\n", argv[2], nblk);
           send_mesg->cm_type = 1;
+          send_mesg->cl_token = mytoken;
           send_mesg->cm_cblk = cblk;
         
         }
@@ -153,8 +155,7 @@ int main(int argc, char ** argv)
         exit(-1);
       }
 
-/*
-#ifdef WITH-PROGBAR
+#ifdef WITHPROGBAR
       // set up progress bar
       lpc = 0;
       int i;
@@ -178,7 +179,6 @@ int main(int argc, char ** argv)
       }
       fflush(stdout);
 #endif
-*/
 
 
     } else if(recv_mesg->sm_type == 1) {
@@ -198,8 +198,7 @@ int main(int argc, char ** argv)
         } else {
           write(fd, recv_mesg->sm_body, 1024);
 
-/*
-#ifdef WITH-PROGBAR
+#ifdef WITHPROGBAR
           // update the progress % and progress bar
           rpc = (int)(((float)cblk/nblk)*100);
           if(rpc%5==0 && lpc!=rpc) {
@@ -208,12 +207,12 @@ int main(int argc, char ** argv)
           }
           fflush(stdout);
 #endif
-*/
         }
       }
 
       // if the server sends a block other than the one that was requested, the client
       // won't write the block to disk and keep asking for the correct block    
+      send_mesg->cl_token = mytoken;
       send_mesg->cm_type = 1;
       send_mesg->cm_cblk = cblk;
 
