@@ -115,8 +115,6 @@ int main(int argc, char ** argv)
       if(recv_mesg->cm_cblk == (nblk_array[recv_mesg->cl_token] - 1)) {
        
         lblk_req = 1; 
-        //nblk = 0;
-        //lblk_sz = 0;
 
       } 
       if((lseek(desc_array[recv_mesg->cl_token], 0, SEEK_CUR)/1024) != recv_mesg->cm_cblk) {
@@ -131,7 +129,6 @@ int main(int argc, char ** argv)
       send_mesg->sm_type = 1;
       send_mesg->sm_nblk = recv_mesg->cm_cblk;
       read(desc_array[recv_mesg->cl_token], send_mesg->sm_body, 1024);
-      //printf("reading from fd: %d (token %d)\n", desc_array[recv_mesg->cl_token], recv_mesg->cl_token);
       sendto(sockfd, send_mesg, sizeof(struct smsg), 0, (struct sockaddr*)&cliaddr, len);
   
       if(lblk_req) {
@@ -144,8 +141,6 @@ int main(int argc, char ** argv)
 
       printf("client encountered error, cancelling transfer\n");
       close(desc_array[recv_mesg->cl_token]);
-      //nblk = 0;
-      //lblk_sz = 0;
     } else {
       printf("client: bad request format\n");
     }
