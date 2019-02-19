@@ -54,3 +54,5 @@ perms' . n . xs                 = g'.(perms'.(n-1).xs).xs
 uniqfy . (x::[])                = [x]
 uniqfy . (x::xs)  | x `elem` xs = uniqfy.xs
                   | otherwise   = x :: uniqfy.xs
+
+

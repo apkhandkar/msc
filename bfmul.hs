@@ -124,11 +124,3 @@ ilist2s . (x::xs) = ilist2s.[x] ++ ilist2s.xs
 
 bfmul : [Char] -> [Char] -> [Char]
 bfmul . n1 . n2 = ilist2s.(simult_int.(s2ilist.n1).(s2ilist.n2))
-
-
-
-
-
-
-
-
