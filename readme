@@ -1,8 +1,10 @@
-https://www.gnu.org/licenses/old-licenses/gpl-2.0.en.html
-
 Some '.hs' programs in this folder are actually written in Pugofer,
 a dialect of Gofer used to teach functional programming in Pune
 University. It is not so different from Gofer (or even Haskell), 
 the most noticeable change being the introduction of the 'Dijkstra
 Dot' (.) for function application, and the fact that is is 'needed' 
-unlike in Haskell where spaces can be used for that end.
+unlike in Haskell where spaces can be used to that end.
+
+More about Pugofer: https://github.com/rusimody/gofer/blob/master/README.org
+
+The files contained herein have no license.
