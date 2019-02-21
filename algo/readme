@@ -1,1 +1,10 @@
 Programs written for my Algorithms course at Pune University
+
+Some '.hs' programs in this folder are actually written in Pugofer,
+a dialect of Gofer used to teach functional programming at Pune
+University. It is not so different from Gofer (or even Haskell), 
+the most noticeable change being the introduction of the 'Dijkstra
+Dot' (.) for function application, and the fact that is is 'needed' 
+unlike in Haskell where spaces can be used to that end.
+
+More about Pugofer: https://github.com/rusimody/gofer/blob/master/README.org
