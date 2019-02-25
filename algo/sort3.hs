@@ -3,7 +3,7 @@
 (@:) :: Ord a => a -> [a] -> [a]
 (@:) e [] = (e:[])
 (@:) e (x:xs) | e < x = e:(x:xs)
-               | otherwise = x:((@:) e xs)
+               | otherwise = x:(e@:xs)
 
 -- sort3: sorts an unsorted list by using cons'
 sort3 :: Ord a => [a] -> [a]
