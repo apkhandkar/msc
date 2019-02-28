@@ -47,12 +47,37 @@ _inferAlphabet [] = []
 _inferAlphabet ((from, input, to):[]) = input:[]
 _inferAlphabet ((from, input, to):ts) = input:(_inferAlphabet ts)
 
-_procSymList :: [ASym Char] -> [ASym Char]
-_procSymList [] = []
-_procSymList (a:[]) = a:[]
-_procSymList (a:as) | a `elem` as  = _procSymList as
-                    | otherwise    = a:(_procSymList as)
+_rmDup :: Eq a => [a] -> [a]
+_rmDup [] = []
+_rmDup (a:[]) = a:[]
+_rmDup (a:as) | a `elem` as  = _rmDup as
+              | otherwise    = a:(_rmDup as)
 
 -- infer alphabet from transitions
 inferAlphabet :: [(MState Char, ASym Char, MState Char)] -> [ASym Char]
-inferAlphabet ts = filter (/= Epsilon) (_procSymList (_inferAlphabet ts))
+inferAlphabet ts = filter (/= Epsilon) (_rmDup (_inferAlphabet ts))
+
+_inferStates :: [(MState Char, ASym Char, MState Char)] -> [MState Char]
+_inferStates [] = []
+_inferStates ((from, input, to):[]) | from == to = from:[]
+                                    | otherwise  = from:to:[]
+_inferStates ((from, input, to):ts) | from == to = from:(_inferStates ts)
+                                    | otherwise  = from:to:(_inferStates ts)
+
+-- infer states from transitions
+inferStates :: [(MState Char, ASym Char, MState Char)] -> [MState Char]
+inferStates ts = _rmDup (_inferStates ts)
+
+-- build an FSM given transitions, start state and set of final states
+-- start state and final states should be from the [inferred] set of states
+-- otherwise the function returns Nothing
+buildFSM :: [(MState Char, ASym Char, MState Char)] -> MState Char -> [MState Char] -> Maybe FSM
+buildFSM ts ss fs 
+    | (ss `elem` (inferStates ts)) && (all (`elem` (inferStates ts)) fs) = Just FSM {
+        states = (inferStates ts),
+        alphabet = (inferAlphabet ts),
+        transitions = ts,
+        sstate = ss,
+        fstates = fs }
+    | otherwise = Nothing
+
