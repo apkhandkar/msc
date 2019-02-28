@@ -1,3 +1,18 @@
+-- A Finite State Machine (FSM) is defined as a 5-tuple:
+-- (states,alphabet,transitions,sstate,fstates)
+-- where:
+--   states: set of states, type [MState]
+--   alphabet: input alphabet, type [ASym]
+--   transitions: a 3-tuple:
+--     (from, input, to)
+--     where:
+--       from: MState <-- states
+--       input: ASym <-- alphabet or Epsilon
+--       to: MState <-- states
+--   sstate: start state, type MState
+--   fstates: set of accept states, type [MState]
+
+
 -- symbols that consist of the FSM's alphabet
 data ASym a = Symbol a | Epsilon
     deriving (Show,Ord,Eq,Read)
@@ -15,3 +30,14 @@ data FSM = FSM {
         fstates     :: [MState Char] } 
     deriving (Show,Ord,Eq,Read)
 
+-- get set of states of FSM
+getStates :: FSM -> [MState Char]
+getStates (FSM {states=s}) = s
+
+-- get alphabet of FSM
+getAlphabet :: FSM -> [ASym Char]
+getAlphabet (FSM {alphabet=a}) = a
+
+-- get transitions of FSM
+getTransitions :: FSM -> [(MState Char, ASym Char, MState Char)]
+getTransitions (FSM {transitions=t}) = t
