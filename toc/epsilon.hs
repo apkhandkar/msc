@@ -41,3 +41,18 @@ getAlphabet (FSM {alphabet=a}) = a
 -- get transitions of FSM
 getTransitions :: FSM -> [(MState Char, ASym Char, MState Char)]
 getTransitions (FSM {transitions=t}) = t
+
+_inferAlphabet :: [(MState Char, ASym Char, MState Char)] -> [ASym Char]
+_inferAlphabet [] = []
+_inferAlphabet ((from, input, to):[]) = input:[]
+_inferAlphabet ((from, input, to):ts) = input:(_inferAlphabet ts)
+
+_procSymList :: [ASym Char] -> [ASym Char]
+_procSymList [] = []
+_procSymList (a:[]) = a:[]
+_procSymList (a:as) | a `elem` as  = _procSymList as
+                    | otherwise    = a:(_procSymList as)
+
+-- infer alphabet from transitions
+inferAlphabet :: [(MState Char, ASym Char, MState Char)] -> [ASym Char]
+inferAlphabet ts = filter (/= Epsilon) (_procSymList (_inferAlphabet ts))
