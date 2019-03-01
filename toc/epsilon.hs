@@ -21,31 +21,25 @@ data ASym a = Symbol a | Epsilon
 data MState a = State a
     deriving (Show,Ord,Eq,Read)
 
+data FSMTransition = FSMTransition {
+        from  :: MState Char,
+        input :: ASym Char,
+        to    :: MState Char }
+    deriving (Show,Ord,Eq,Read)
+
 -- the 5-tuple that is the FSM 
 data FSM = FSM { 
         states      :: [MState Char], 
         alphabet    :: [ASym Char],
-        transitions :: [(MState Char, ASym Char, MState Char)],
+        transitions :: [FSMTransition],
         sstate      :: MState Char,
         fstates     :: [MState Char] } 
     deriving (Show,Ord,Eq,Read)
 
--- get set of states of FSM
-getStates :: FSM -> [MState Char]
-getStates (FSM {states=s}) = s
-
--- get alphabet of FSM
-getAlphabet :: FSM -> [ASym Char]
-getAlphabet (FSM {alphabet=a}) = a
-
--- get transitions of FSM
-getTransitions :: FSM -> [(MState Char, ASym Char, MState Char)]
-getTransitions (FSM {transitions=t}) = t
-
-_inferAlphabet :: [(MState Char, ASym Char, MState Char)] -> [ASym Char]
+_inferAlphabet :: [FSMTransition] -> [ASym Char]
 _inferAlphabet [] = []
-_inferAlphabet ((from, input, to):[]) = input:[]
-_inferAlphabet ((from, input, to):ts) = input:(_inferAlphabet ts)
+_inferAlphabet ((FSMTransition{input=i}):[]) = i:[]
+_inferAlphabet ((FSMTransition{input=i}):ts) = i:(_inferAlphabet ts)
 
 _rmDup :: Eq a => [a] -> [a]
 _rmDup [] = []
@@ -54,24 +48,24 @@ _rmDup (a:as) | a `elem` as  = _rmDup as
               | otherwise    = a:(_rmDup as)
 
 -- infer alphabet from transitions
-inferAlphabet :: [(MState Char, ASym Char, MState Char)] -> [ASym Char]
+inferAlphabet :: [FSMTransition] -> [ASym Char]
 inferAlphabet ts = filter (/= Epsilon) (_rmDup (_inferAlphabet ts))
 
-_inferStates :: [(MState Char, ASym Char, MState Char)] -> [MState Char]
+_inferStates :: [FSMTransition] -> [MState Char]
 _inferStates [] = []
-_inferStates ((from, input, to):[]) | from == to = from:[]
-                                    | otherwise  = from:to:[]
-_inferStates ((from, input, to):ts) | from == to = from:(_inferStates ts)
-                                    | otherwise  = from:to:(_inferStates ts)
+_inferStates ((FSMTransition{from=f,to=t}):[]) | f == t    = f:[]
+                                               | otherwise = f:t:[]
+_inferStates ((FSMTransition{from=f,to=t}):ts) | f == t    = f:(_inferStates ts)
+                                               | otherwise = f:t:(_inferStates ts)
 
 -- infer states from transitions
-inferStates :: [(MState Char, ASym Char, MState Char)] -> [MState Char]
+inferStates :: [FSMTransition] -> [MState Char]
 inferStates ts = _rmDup (_inferStates ts)
 
 -- build an FSM given transitions, start state and set of final states
 -- start state and final states should be from the [inferred] set of states
 -- otherwise the function returns Nothing
-buildFSM :: [(MState Char, ASym Char, MState Char)] -> MState Char -> [MState Char] -> Maybe FSM
+buildFSM :: [FSMTransition] -> MState Char -> [MState Char] -> Maybe FSM
 buildFSM ts ss fs 
     | (ss `elem` (inferStates ts)) && (all (`elem` (inferStates ts)) fs) = Just FSM {
         states = (inferStates ts),
