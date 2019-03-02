@@ -14,7 +14,7 @@
 
 
 -- symbols that consist of the FSM's alphabet
-data ASym a = Symbol a | Epsilon
+data ASym a  = Symbol a | Epsilon
     deriving (Show,Ord,Eq,Read)
 
 -- states that the FSM can assume
@@ -74,4 +74,32 @@ buildFSM ts ss fs
         sstate = ss,
         fstates = fs }
     | otherwise = Nothing
+
+--_epsilonClosureFor :: [FSMTransition] -> MState Char -> [MState Char]
+
+-- to debug ONLY
+t1 = FSMTransition {from=State '0', input=Epsilon, to=State '1'}
+t2 = FSMTransition {from=State '0', input=Epsilon, to=State '7'}
+t3 = FSMTransition {from=State '1', input=Epsilon, to=State '2'}
+t4 = FSMTransition {from=State '1', input=Epsilon, to=State '4'}
+t5 = FSMTransition {from=State '2', input=Symbol 'a', to=State '3'}
+t6 = FSMTransition {from=State '4', input=Symbol 'b', to=State '5'}
+t7 = FSMTransition {from=State '3', input=Epsilon, to=State '6'}
+t8 = FSMTransition {from=State '5', input=Epsilon, to=State '6'}
+t9 = FSMTransition {from=State '6', input=Epsilon, to=State '1'}
+t10 = FSMTransition {from=State '6', input=Epsilon, to=State '7'}
+trans = [t1, t2, t3, t4, t5, t6, t7, t8, t9, t10]
+
+-- /debug
+
+
+epsClosure :: [FSMTransition] -> MState Char -> [MState Char]
+epsClosure ts start = start:nextLists
+    where
+        nextTos = map (\FSMTransition{to=t} -> t) $ filter
+            (\FSMTransition{from=f,input=i} -> ((f == start) && (i == Epsilon))) ts
+        nextLists = if nextTos == []
+            then []
+            else concat $ map (\nextStart -> epsClosure ts nextStart) nextTos
+
 
