@@ -75,8 +75,6 @@ buildFSM ts ss fs
         fstates = fs }
     | otherwise = Nothing
 
---_epsilonClosureFor :: [FSMTransition] -> MState Char -> [MState Char]
-
 -- to debug ONLY
 t1 = FSMTransition {from=State '0', input=Epsilon, to=State '1'}
 t2 = FSMTransition {from=State '0', input=Epsilon, to=State '7'}
@@ -89,17 +87,18 @@ t8 = FSMTransition {from=State '5', input=Epsilon, to=State '6'}
 t9 = FSMTransition {from=State '6', input=Epsilon, to=State '1'}
 t10 = FSMTransition {from=State '6', input=Epsilon, to=State '7'}
 trans = [t1, t2, t3, t4, t5, t6, t7, t8, t9, t10]
-
 -- /debug
 
-
-epsClosure :: [FSMTransition] -> MState Char -> [MState Char]
-epsClosure ts start = start:nextLists
+-- this does the actual work
+epsClosureT :: MState Char -> [FSMTransition] -> [MState Char]
+epsClosureT start ts = start:nextLists
     where
         nextTos = map (\FSMTransition{to=t} -> t) $ filter
             (\FSMTransition{from=f,input=i} -> ((f == start) && (i == Epsilon))) ts
-        nextLists = if nextTos == []
-            then []
-            else concat $ map (\nextStart -> epsClosure ts nextStart) nextTos
+        nextLists = concat $ map (\nextStart -> epsClosureT nextStart ts) nextTos
 
+-- find epsilon closure of a state from a machine
+epsClosure :: MState Char -> Maybe FSM -> Maybe [MState Char]
+epsClosure start Nothing = Nothing
+epsClosure start (Just FSM{transitions=t}) = Just (epsClosureT start t)
 
