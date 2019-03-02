@@ -14,19 +14,19 @@ data MState a = State a
 
 data FSMTransition = Transition {
         from  :: MState [Char],
-        input :: ASym Char,
+        input :: ASym [Char],
         to    :: MState [Char] }
     deriving (Show,Ord,Eq,Read)
 
 data FSMachine = Machine {
         states      :: [MState [Char]],
-        alphabet    :: [ASym Char],
+        alphabet    :: [ASym [Char]],
         transitions :: [FSMTransition],
         sstate      :: MState [Char],
         fstates     :: [MState [Char]] }
     deriving (Show,Ord,Eq,Read)
 
-__inferAlphabet :: [FSMTransition] -> [ASym Char]
+__inferAlphabet :: [FSMTransition] -> [ASym [Char]]
 __inferAlphabet [] = []
 __inferAlphabet ((Transition{input=i}):[]) = i:[]
 __inferAlphabet ((Transition{input=i}):ts) = i:(__inferAlphabet ts)
@@ -37,7 +37,7 @@ _rmDup (a:[]) = a:[]
 _rmDup (a:as) | a `elem` as = _rmDup as
               | otherwise   = a:(_rmDup as)
 
-_inferAlphabet :: [FSMTransition] -> [ASym Char]
+_inferAlphabet :: [FSMTransition] -> [ASym [Char]]
 _inferAlphabet ts = filter (/= Epsilon) (_rmDup (__inferAlphabet ts))
 
 __inferStates :: [FSMTransition] -> [MState [Char]]
