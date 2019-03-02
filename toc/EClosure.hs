@@ -1,3 +1,8 @@
+module EClosure
+(   epsClosureT,
+    epsClosure
+) where
+
 import FSM
 
 epsClosureT :: MState Char -> [FSMTransition] -> [MState Char]
