@@ -13,17 +13,17 @@ data MState a = State a
     deriving (Show,Ord,Eq,Read)
 
 data FSMTransition = Transition {
-        from  :: MState Char,
+        from  :: MState [Char],
         input :: ASym Char,
-        to    :: MState Char }
+        to    :: MState [Char] }
     deriving (Show,Ord,Eq,Read)
 
 data FSMachine = Machine {
-        states      :: [MState Char],
+        states      :: [MState [Char]],
         alphabet    :: [ASym Char],
         transitions :: [FSMTransition],
-        sstate      :: MState Char,
-        fstates     :: [MState Char] }
+        sstate      :: MState [Char],
+        fstates     :: [MState [Char]] }
     deriving (Show,Ord,Eq,Read)
 
 __inferAlphabet :: [FSMTransition] -> [ASym Char]
@@ -40,17 +40,17 @@ _rmDup (a:as) | a `elem` as = _rmDup as
 _inferAlphabet :: [FSMTransition] -> [ASym Char]
 _inferAlphabet ts = filter (/= Epsilon) (_rmDup (__inferAlphabet ts))
 
-__inferStates :: [FSMTransition] -> [MState Char]
+__inferStates :: [FSMTransition] -> [MState [Char]]
 __inferStates [] = []
 __inferStates ((Transition{from=f,to=t}):[]) | f == t    = f:[]
                                              | otherwise = f:t:[]
 __inferStates ((Transition{from=f,to=t}):ts) | f == t    = f:(__inferStates ts)
                                              | otherwise = f:t:(__inferStates ts)
 
-_inferStates :: [FSMTransition] -> [MState Char]
+_inferStates :: [FSMTransition] -> [MState [Char]]
 _inferStates ts = _rmDup (__inferStates ts)
 
-buildFSMachine :: [FSMTransition] -> MState Char -> [MState Char] -> Maybe FSMachine
+buildFSMachine :: [FSMTransition] -> MState [Char] -> [MState [Char]] -> Maybe FSMachine
 buildFSMachine ts ss fs
     | (ss `elem` inferredStates) && (all (`elem` inferredStates) fs) = Just Machine {
         states      = inferredStates,
