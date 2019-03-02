@@ -50,6 +50,9 @@ __inferStates ((Transition{from=f,to=t}):ts) | f == t    = f:(__inferStates ts)
 _inferStates :: [FSMTransition] -> [MState [Char]]
 _inferStates ts = _rmDup (__inferStates ts)
 
+-- The alphabet of the machine and its states are inferred from the transitions 
+-- supplied to the build function. The start state and every final state should
+-- be from the inferred states set.
 buildFSMachine :: [FSMTransition] -> MState [Char] -> [MState [Char]] -> Maybe FSMachine
 buildFSMachine ts ss fs
     | (ss `elem` inferredStates) && (all (`elem` inferredStates) fs) = Just Machine {
