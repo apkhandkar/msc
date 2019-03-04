@@ -21,5 +21,4 @@ main = do
     let states = inferStates transitions
     let closures = zip states (map (epsClosureT transitions) states)
 
-    putStrLn "Epsilon Closures: "
     printClosures closures
