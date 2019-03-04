@@ -1,7 +1,6 @@
 module Helpers
     ( tokenise,
       getAlphabet,
-      printAlphabet,
       buildTransitionsFor,
       printClosures
     ) where
@@ -21,13 +20,6 @@ getAlphabet (x:[]) | x == "~Eps"  = Epsilon:[]
                    | otherwise    = Symbol x:[]
 getAlphabet (x:xs) | x == "~Eps"  = Epsilon:[]
                    | otherwise    = Symbol x:(getAlphabet xs)
-
-printAlphabet :: [ASym [Char]] -> IO()
-printAlphabet [] = do
-    putStr "\n"
-printAlphabet (x:xs) = do
-    putStr $ show x ++ " "
-    printAlphabet xs
 
 buildTransitionsFor :: [ASym [Char]] -> Int -> ([Char],[[[Char]]]) -> [FSMTransition]
 buildTransitionsFor alphabet n (from,(tos:[]))   | tos == ["-"] = 
