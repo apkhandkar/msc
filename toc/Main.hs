@@ -9,5 +9,5 @@ main = do
     contents <- getContents
     let inStr = getInputsString $ lines contents
     let alphabet = getAlphabet  inStr
-    putStrLn "Alphabet: "
+    putStrLn "Machine Alphabet: "
     printAlphabet alphabet

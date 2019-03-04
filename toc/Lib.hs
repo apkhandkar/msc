@@ -19,10 +19,10 @@ getInputsString (x:xs) = tokenise ';' x
 
 getAlphabet :: [[Char]] -> [ASym [Char]]
 getAlphabet [] = []
-getAlphabet (x:[]) | x == "~"  = Epsilon:[]
-                   | otherwise = Symbol x:[]
-getAlphabet (x:xs) | x == "~"  = Epsilon:[]
-                   | otherwise = Symbol x:(getAlphabet xs)
+getAlphabet (x:[]) | x == "~Eps"  = Epsilon:[]
+                   | otherwise    = Symbol x:[]
+getAlphabet (x:xs) | x == "~Eps"  = Epsilon:[]
+                   | otherwise    = Symbol x:(getAlphabet xs)
 
 printAlphabet :: [ASym [Char]] -> IO()
 printAlphabet [] = do
