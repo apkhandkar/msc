@@ -3,3 +3,7 @@ To build (needs GHC):
 
 Usage:
 	cat <inputfile> | ./eclosure
+
+	Special symbols: 
+		`~Eps`: Epsilon
+		`-`: No transition
