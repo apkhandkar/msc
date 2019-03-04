@@ -1,10 +1,10 @@
 module FSM 
-(   ASym (Symbol, Epsilon),
-    MState (State),
-    FSMTransition (Transition, from, input, to),
-    FSMachine (Machine, states, alphabet, transitions, sstate, fstates),
-    buildFSMachine
-) where
+    ( ASym (Symbol, Epsilon),
+      MState (State),
+      FSMTransition (Transition, from, input, to),
+      FSMachine (Machine, states, alphabet, transitions, sstate, fstates),
+      inferStates,
+      buildFSMachine ) where
 
 data ASym a = Symbol a | Epsilon
     deriving (Show,Ord,Eq,Read)
@@ -40,15 +40,15 @@ _rmDup (a:as) | a `elem` as = _rmDup as
 _inferAlphabet :: [FSMTransition] -> [ASym [Char]]
 _inferAlphabet ts = filter (/= Epsilon) (_rmDup (__inferAlphabet ts))
 
-__inferStates :: [FSMTransition] -> [MState [Char]]
-__inferStates [] = []
-__inferStates ((Transition{from=f,to=t}):[]) | f == t    = f:[]
-                                             | otherwise = f:t:[]
-__inferStates ((Transition{from=f,to=t}):ts) | f == t    = f:(__inferStates ts)
-                                             | otherwise = f:t:(__inferStates ts)
-
 _inferStates :: [FSMTransition] -> [MState [Char]]
-_inferStates ts = _rmDup (__inferStates ts)
+_inferStates [] = []
+_inferStates ((Transition{from=f,to=t}):[]) | f == t    = f:[]
+                                             | otherwise = f:t:[]
+_inferStates ((Transition{from=f,to=t}):ts) | f == t    = f:(_inferStates ts)
+                                             | otherwise = f:t:(_inferStates ts)
+
+inferStates :: [FSMTransition] -> [MState [Char]]
+inferStates ts = _rmDup (_inferStates ts)
 
 -- The alphabet of the machine and its states are inferred from the transitions 
 -- supplied to the build function. The start state and every final state should
@@ -63,5 +63,5 @@ buildFSMachine ts ss fs
         fstates     = fs }
     | otherwise = Nothing
     where
-        inferredStates   = _inferStates ts
+        inferredStates   = inferStates ts
         inferredAlphabet = _inferAlphabet ts

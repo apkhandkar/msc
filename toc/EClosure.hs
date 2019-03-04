@@ -1,7 +1,7 @@
 module EClosure
-(   epsClosureT,
-    epsClosure
-) where
+    ( epsClosureT,
+      epsClosureT',
+      epsClosure ) where
 
 import FSM
 
@@ -11,6 +11,9 @@ epsClosureT start ts = start:nextStates
         nextTos = map (\Transition{to=t} -> t) $ filter
             (\Transition{from=f,input=i} -> ((f == start) && (i == Epsilon))) ts
         nextStates = concat $ map (\nextStart -> epsClosureT nextStart ts) nextTos
+
+epsClosureT' :: [FSMTransition] -> MState [Char] -> [MState [Char]]
+epsClosureT' ts start = epsClosureT start ts
 
 epsClosure :: MState [Char] -> Maybe FSMachine -> Maybe [MState [Char]]
 epsClosure start Nothing = Nothing
