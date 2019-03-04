@@ -1,0 +1,5 @@
+To build (needs GHC):
+	make eclosure
+
+Usage:
+	cat <inputfile> | ./eclosure
