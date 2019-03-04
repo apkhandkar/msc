@@ -5,5 +5,5 @@ Usage:
 	cat <inputfile> | ./eclosure
 
 	Special symbols: 
-		`~Eps`: Epsilon
-		`-`: No transition
+	`~Eps`: Epsilon
+	`-`: No transition
