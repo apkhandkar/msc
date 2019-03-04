@@ -1,6 +1,6 @@
 module Main where
 
-import FSM
+import FSMicro
 import Helpers
 import EClosure
 
@@ -19,7 +19,7 @@ main = do
     let transitions = concat $ map (buildTransitionsFor alphabet 0) rawTransitions
 
     let states = inferStates transitions
-    let closures = zip states (map (epsClosureT' transitions) states)
+    let closures = zip states (map (epsClosureT transitions) states)
 
     putStrLn "Epsilon Closures: "
     printClosures closures

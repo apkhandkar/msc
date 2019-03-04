@@ -1,13 +1,12 @@
 module Helpers
     ( tokenise,
-      getInputsString,
       getAlphabet,
       printAlphabet,
       buildTransitionsFor,
       printClosures
     ) where
 
-import FSM
+import FSMicro
 import Data.List
 
 tokenise :: Char -> [Char] -> [[Char]]
@@ -15,9 +14,6 @@ tokenise _ [] = [[]]
 tokenise d li = 
     map (takeWhile (/= d) . tail)
         (filter (isPrefixOf [d]) (tails (d : li)))
-
-getInputsString :: [[Char]] -> [[Char]]
-getInputsString (x:xs) = tokenise ';' x
 
 getAlphabet :: [[Char]] -> [ASym [Char]]
 getAlphabet [] = []
