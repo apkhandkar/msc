@@ -4,6 +4,7 @@ module Helpers
       getAlphabet,
       printAlphabet,
       buildTransitionsFor,
+      printClosures
     ) where
 
 import FSM
@@ -45,3 +46,16 @@ buildTransitionsFor alphabet n (from,(tos:toss)) | otherwise    =
 getTrans :: [Char] -> [[Char]] -> ASym [Char] -> [FSMTransition]
 getTrans f [] i = []
 getTrans f (t:ts) i = (Transition{from=State f,input=i,to=State t}):(getTrans f ts i)
+
+_printClosure :: (MState [Char], [MState [Char]]) -> IO()
+_printClosure ((State s), (State t):[]) = do
+    putStr $ t ++ " :: from " ++ s ++ "\n"
+_printClosure ((State s), (State t):ts) = do
+    putStr $ t ++ " "
+    _printClosure ((State s), ts)
+
+printClosures :: [(MState [Char], [MState [Char]])] -> IO()
+printClosures []     = return()
+printClosures (c:cs) = do
+    _printClosure c
+    printClosures cs

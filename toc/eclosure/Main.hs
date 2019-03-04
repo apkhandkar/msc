@@ -22,4 +22,4 @@ main = do
     let closures = zip states (map (epsClosureT' transitions) states)
 
     putStrLn "Epsilon Closures: "
-    putStrLn $ show closures
+    printClosures closures
