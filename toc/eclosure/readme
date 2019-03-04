@@ -2,7 +2,7 @@ To build (needs GHC):
 	make eclosure
 
 Usage:
-	cat <inputfile> | ./eclosure
+	cat <inputfile> | ./eclosure [| cat > <outfile>]
 
 	Special symbols: 
 	`~Eps`: Epsilon
