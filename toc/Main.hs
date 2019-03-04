@@ -7,4 +7,7 @@ import EClosure
 main :: IO()
 main = do
     contents <- getContents
-    putStrLn "work in progress"
+    let inStr = getInputsString $ lines contents
+    let alphabet = getAlphabet  inStr
+    putStrLn "Alphabet: "
+    printAlphabet alphabet
