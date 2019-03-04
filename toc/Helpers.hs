@@ -2,7 +2,8 @@ module Helpers
     ( tokenise,
       getInputsString,
       getAlphabet,
-      printAlphabet
+      printAlphabet,
+      buildTransitionsFor,
     ) where
 
 import FSM
@@ -31,3 +32,16 @@ printAlphabet (x:xs) = do
     putStr $ show x ++ " "
     printAlphabet xs
 
+buildTransitionsFor :: [ASym [Char]] -> Int -> ([Char],[[[Char]]]) -> [FSMTransition]
+buildTransitionsFor alphabet n (from,(tos:[]))   | tos == ["-"] = 
+    []
+buildTransitionsFor alphabet n (from,(tos:[]))   | otherwise    =
+    getTrans from tos (alphabet!!n)
+buildTransitionsFor alphabet n (from,(tos:toss)) | tos == ["-"] =
+    buildTransitionsFor alphabet (n+1) (from,toss) 
+buildTransitionsFor alphabet n (from,(tos:toss)) | otherwise    = 
+    (getTrans from tos (alphabet!!n)) ++ (buildTransitionsFor alphabet (n+1) (from,toss))
+
+getTrans :: [Char] -> [[Char]] -> ASym [Char] -> [FSMTransition]
+getTrans f [] i = []
+getTrans f (t:ts) i = (Transition{from=State f,input=i,to=State t}):(getTrans f ts i)
