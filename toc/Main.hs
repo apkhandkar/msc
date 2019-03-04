@@ -1,13 +1,15 @@
 module Main where
 
 import FSM
-import Lib
+import Helpers
 import EClosure
 
 main :: IO()
 main = do
     contents <- getContents
-    let inStr = getInputsString $ lines contents
-    let alphabet = getAlphabet  inStr
+    let lContents = lines contents
+    let rawInputs = tokenise ';' (head  lContents)
+    let alphabet = getAlphabet rawInputs
+    let tRawTrans = map (tokenise ';') (tail lContents) 
     putStrLn "Machine Alphabet: "
     printAlphabet alphabet

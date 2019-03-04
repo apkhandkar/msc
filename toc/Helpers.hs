@@ -1,4 +1,4 @@
-module Lib
+module Helpers
     ( tokenise,
       getInputsString,
       getAlphabet,
@@ -30,3 +30,4 @@ printAlphabet [] = do
 printAlphabet (x:xs) = do
     putStr $ show x ++ " "
     printAlphabet xs
+
