@@ -6,5 +6,3 @@ Dot' (.) for function application, and the fact that is is 'needed'
 unlike in Haskell where spaces can be used to that end.
 
 More about Pugofer: https://github.com/rusimody/gofer/blob/master/README.org
-
-The files contained herein have no license.
