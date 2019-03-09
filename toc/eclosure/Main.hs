@@ -6,14 +6,13 @@ import EClosure
 
 main :: IO()
 main = do
-    contents <- getContents
-    let lContents = lines contents
+    contents <- fmap lines getContents
 
-    let rawInputs = tokenise ';' (head  lContents)
+    let rawInputs = tokenise ';' (head  contents)
     let rawTransitions = map (\(x,y) -> (x, map (tokenise ',') y))
                             (map (\(x,y) -> (x, tokenise ';' y))
                                 (map (\x -> (head x, concat $ tail x))
-                                    (map (tokenise ':') (tail lContents))))
+                                    (map (tokenise ':') (tail contents))))
 
     let alphabet = getAlphabet rawInputs
     let transitions = concat $ map (buildTransitionsFor alphabet 0) rawTransitions
