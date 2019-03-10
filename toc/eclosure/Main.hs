@@ -4,20 +4,19 @@ import FSMicro
 import Helpers
 import EClosure
 
-main :: IO()
-main = do
-    contents <- fmap lines getContents
+main :: IO ()
+main =
+    fmap lines getContents >>=
+        \contents ->
+            let rawInputs = tokenise ';' (head contents)
+                rawTransitions = map (\(x,y) -> (x, map (tokenise ',') y))
+                                    (map (\(x,y) -> (x, tokenise ';' y))
+                                        (map (\x -> (head x, concat $ tail x))
+                                            (map (tokenise ':') (tail contents))))
+                alphabet = getAlphabet rawInputs
+                transitions = concat $ map (buildTransitionsFor alphabet 0) rawTransitions
+                states = inferStates transitions
+                closures = zip states (map (epsClosureT transitions) states)
 
-    let rawInputs = tokenise ';' (head  contents)
-    let rawTransitions = map (\(x,y) -> (x, map (tokenise ',') y))
-                            (map (\(x,y) -> (x, tokenise ';' y))
-                                (map (\x -> (head x, concat $ tail x))
-                                    (map (tokenise ':') (tail contents))))
-
-    let alphabet = getAlphabet rawInputs
-    let transitions = concat $ map (buildTransitionsFor alphabet 0) rawTransitions
-
-    let states = inferStates transitions
-    let closures = zip states (map (epsClosureT transitions) states)
-
-    printClosures closures
+            in  printClosures closures >>
+                return ()
