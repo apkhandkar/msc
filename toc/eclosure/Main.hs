@@ -6,8 +6,8 @@ import EClosure
 
 main :: IO ()
 main = 
-    fmap lines getContents >>=
-        \contents ->
+    (>>=) (fmap lines getContents) 
+        (\contents ->
             let alphabet = getAlphabet $ tokenise ';' (head contents)
                 transitions = concat $ map (buildTransitionsFor alphabet 0)
                     (map (\(x,y) -> (x, map (tokenise ',') y))
@@ -17,5 +17,4 @@ main =
                 states = inferStates transitions
                 closures = zip states $ map (epsClosureT transitions) states
 
-            in  printClosures closures >>
-                return()
+            in  (>>) (printClosures closures) (return ()))
