@@ -20,8 +20,8 @@ main =
             in  printClosures closures >> 
                 return ())
 
---  How main is structured:
---  (>>=) :: Monad m => m a -> (a -> m b) -> m b$, where:
+--  How main is structured (I'm dumb, I need this to remind myself :))
+--  (>>=) :: Monad m => m a -> (a -> m b) -> m b, where:
 --  m a = (fmap lines getContents) :: IO [String] and
 --  (a -> m b) = (\contents -> ... in ... return ()) :: [String] -> IO () and thus
 --  m b = main :: IO (), Q.E.D.
