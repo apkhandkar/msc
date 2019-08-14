@@ -1,0 +1,36 @@
+init Hello, this is my first sentence
+output
+delete
+output
+delete
+output
+insert Does this work, really?
+output
+move l
+output
+move l
+output
+move r
+output
+move l 9
+output
+move r haha
+output
+move r 5
+output
+delete 3
+output
+delete 3
+output
+delete 10
+output
+move l 15
+insert eal life stories
+output
+delete 1000
+output
+insert Bridges must be burnt! To the ground!
+output
+move l 1200
+insert Wow, hi
+output

@@ -1,0 +1,7 @@
+init OneWordInit_DoesThisWork?
+output
+init
+insert Now, this is novel
+output
+init Re-initialization, I guess :)
+output

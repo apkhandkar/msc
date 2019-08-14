@@ -1,0 +1,7 @@
+init Hello. This is my first sentence.
+move l 10
+delete
+insert testing something new
+move r 5
+insert does this work
+output
