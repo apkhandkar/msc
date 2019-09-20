@@ -5,7 +5,6 @@ import SETypes
 import Text.Read
 import Data.Maybe
 
-main :: IO ()
 main = do
     (>>=) (lines <$> getContents)
         (\contents ->
