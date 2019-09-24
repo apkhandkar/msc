@@ -1,0 +1,15 @@
+This is an attempt to take 'sugared' pieces of Haskell code from
+Learn You a Haskell for Great Good! (http://learnyouahaskell.com) 
+and 'desugar' them.
+
+Sugaring is syntactic shortening and/or simplification intended
+to make code look more presentable. In this specific context, the
+'do' notation in Haskell allows IO-driven programs to be written
+in a manner similar to imperative programs written in languages
+like C, thereby reducing the learning curve for beginners who
+are unaccustomed to Haskell's brand of strict functional 
+programming.
+
+By desugaring these snippets of code, the 'do' notation is replaced
+by the 'pure' underlying features provided by Haskell to work with
+the IO monad, like the binding and sequencing operators.
