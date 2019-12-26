@@ -1,0 +1,10 @@
+ini This was initialised
+out
+ina I am adding this!
+out
+mov r 10
+out
+mov l 10
+out
+mov l 100
+out
