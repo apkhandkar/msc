@@ -9,8 +9,8 @@ module SELib
       deleteAt,
       moveLeft,
       moveRight,
-      output,
       cursorMark,
+      changeCursor,
       tokenise ) where
 
 import SETypes
@@ -20,7 +20,7 @@ import Data.List
 
 ini :: String -> SEState
 ini str =
-    (SEState{string=str,cursor=(length str)})
+    (SEState{string=str,cursor=(length str),marker='^'})
 
 -- insert at location (ins)
 
@@ -33,8 +33,8 @@ insertAt n s0 (x:xs) =
     x:(insertAt (n-1) s0 xs)
 
 ins :: SEState -> [Char] -> SEState
-ins state@(SEState{string=s,cursor=c}) s0 = 
-    (SEState{string=(insertAt c s0 s),cursor=(c + length s0)})
+ins state@(SEState{string=s,cursor=c,marker=m}) s0 = 
+    (SEState{string=(insertAt c s0 s),cursor=(c + length s0),marker=m})
 
 -- insert after location (ina)
 
@@ -47,7 +47,7 @@ insertAfter n s0 s1 = pre ++ s1 ++ post
 
 ina :: SEState -> [Char] -> SEState
 ina state@(SEState{string=s,cursor=c}) s0 = 
-    (SEState{string=(insertAfter c s s0),cursor=(c + length s0)})
+    (SEState{string=(insertAfter c s s0),cursor=(c + length s0),marker='^'})
 
 -- delete (del)
 
@@ -60,11 +60,11 @@ deleteAt n (x:xs) =
     (x:(deleteAt (n-1) xs))
 
 del :: SEState -> SEState
-del state@(SEState{string=s,cursor=c})
+del state@(SEState{string=s,cursor=c,marker=m})
     | c == (length s) =
-        (SEState{string=(deleteAt c s),cursor=(c-1)})
+        (SEState{string=(deleteAt c s),cursor=(c-1),marker=m})
     | otherwise =
-        (SEState{string=(deleteAt c s),cursor=c})
+        (SEState{string=(deleteAt c s),cursor=c,marker=m})
 
 deleteN :: Int -> SEState -> SEState
 deleteN 0 state =
@@ -75,44 +75,31 @@ deleteN n state =
 -- move left/right (mov l/r)
 
 moveLeft :: Int -> SEState -> SEState
-moveLeft n state@(SEState{string=s,cursor=c})
+moveLeft n state@(SEState{string=s,cursor=c,marker=m})
     | n == 0 =
         state
     | (c - n) < 0 =
-        (SEState{string=s,cursor=1})
+        (SEState{string=s,cursor=1,marker=m})
     | otherwise =
-        (SEState{string=s,cursor=(c-n)})
+        (SEState{string=s,cursor=(c-n),marker=m})
 
 moveRight :: Int -> SEState -> SEState
-moveRight n state@(SEState{string=s,cursor=c})
+moveRight n state@(SEState{string=s,cursor=c,marker=m})
     | (c + n) > (length s) = 
-        (SEState{string=s,cursor=(length s)})
+        (SEState{string=s,cursor=(length s),marker=m})
     | otherwise =
-        (SEState{string=s,cursor=(c+n)})
+        (SEState{string=s,cursor=(c+n),marker=m})
 
--- output (out)
+-- change cursor character
 
-output :: SEState -> IO (SEState)
-output state@(SEState{string=s,cursor=c})
-    | (c > length s) = 
-        putStrLn s >>
-        cursorMark (length s) >>
-        return state
-    | otherwise = 
-        putStrLn s >>
-        cursorMark c >>
-        return state
+changeCursor :: SEState -> Char -> SEState
+changeCursor istate@(SEState{string=s,cursor=c,marker=m}) n =
+    SEState{string=s,cursor=c,marker=n}
 
-cursorMark :: Int -> IO ()
-cursorMark 1 =
-    putStrLn "^" >>
-    return ()
-cursorMark n    
-    | n < 0 =
-        cursorMark 1
-    | otherwise =
-        putStr " " >>
-        cursorMark (n-1)
+-- generate marker line
+
+cursorMark :: Int -> Char -> String
+cursorMark n c = (take (n-1) $ repeat ' ') ++ c:[]
 
 -- miscellaneous functions
  

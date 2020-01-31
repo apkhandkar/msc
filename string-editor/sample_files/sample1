@@ -1,7 +1,8 @@
-init Hello. This is my first sentence.
-move l 10
-delete
-insert testing something new
-move r 5
-insert does this work
-output
+ini Hello. This is my first sentence.
+out 
+mov l 10
+del
+ins testing something new
+mov r 5
+ins does this work
+out

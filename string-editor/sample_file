@@ -1,0 +1,15 @@
+ini Hello world
+out
+ina This was added
+out
+mov l 5
+out
+ins also, this was added!
+out
+cur %
+out
+ins also, I will add this
+out
+mov r 3
+out
+mov l askme
