@@ -18,17 +18,16 @@ main =
 
 s_parser :: [[String]] -> OutputState -> State SEState OutputState
 s_parser [] outstate =
-    state $ \s -> (outstate, s)
+    return outstate
 s_parser ((w:[]):ys) outstate =
-    state $ \i@SEState{string=s,cursor=c,marker=m} ->
-    if w == "ini" then 
-        (("[Bad command: stred cannot be initialised with blank string]":[]), i)
-    else if w == "out" then 
-        runState (s_parser ys ((cursorMark c m):s:outstate)) i
-    else if w == "del" then 
-        runState (s_parser ys outstate) (del i)
-    else 
-        runState (s_parser ys (("[Invalid instruction: " ++ w ++ "]"):outstate)) i
+    if w == "ini" then
+        return $ "[Bad command: stred cannot be initialised with blank string]":[]
+    else if w == "out" then
+        s_parser ys outstate
+    else if w == "del" then
+        s_del >> (s_parser ys outstate)
+    else
+        s_parser ys (("[Invalid instruction: " ++ w ++ "]"):outstate)
      
 
 parser :: [[String]] -> OutputState -> SEState -> OutputState
