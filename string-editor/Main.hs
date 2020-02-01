@@ -4,6 +4,7 @@ import SELib
 import SETypes
 import Text.Read
 import Data.Maybe
+import Control.Monad.State
 
 main :: IO ()
 main =
@@ -15,10 +16,25 @@ main =
                 sequence (map putStrLn (reverse $ parser tokenisedContents [] SEState{string=" ",cursor=1,marker='^'})) >>
                 return ())
 
+s_parser :: [[String]] -> OutputState -> State SEState OutputState
+s_parser [] outstate =
+    state $ \s -> (outstate, s)
+s_parser ((w:[]):ys) outstate =
+    state $ \i@SEState{string=s,cursor=c,marker=m} ->
+    if w == "ini" then 
+        (("[Bad command: stred cannot be initialised with blank string]":[]), i)
+    else if w == "out" then 
+        runState (s_parser ys ((cursorMark c m):s:outstate)) i
+    else if w == "del" then 
+        runState (s_parser ys outstate) (del i)
+    else 
+        runState (s_parser ys (("[Invalid instruction: " ++ w ++ "]"):outstate)) i
+     
+
 parser :: [[String]] -> OutputState -> SEState -> OutputState
 parser [] outstate _ = 
     outstate
-parser ((w:[]):ys) outstate state@(SEState{string=s,cursor=c,marker=m})
+parser ((w:[]):ys) outstate state@SEState{string=s,cursor=c,marker=m}
     | w == "ini" =
         ("[Bad command: stred cannot be initialised with blank string]":[])
     | w == "out" =
@@ -46,7 +62,7 @@ parser ((w:x:[]):ys) outstate state
                 parser ys ("[Invalid non-numeric argument to 'delete', skipping this line]":outstate) state
     | otherwise =
         parser ys (("[Invalid instruction: " ++ w ++ "]"):outstate) state
-parser ((w:x:xs):ys) outstate state@(SEState{string=s,cursor=c,marker=m})
+parser ((w:x:xs):ys) outstate state@SEState{string=s,cursor=c,marker=m}
     | w == "ini" =
         parser ys outstate (ini (foldl (++) x ((" "++)<$>xs)))
     | w == "mov" && x == "l" =
