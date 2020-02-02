@@ -13,20 +13,65 @@ main =
             let 
                 tokenisedContents = (tokenise ' ') <$> contents
             in 
-                sequence (map putStrLn (reverse $ parser tokenisedContents [] SEState{string=" ",cursor=1,marker='^'})) >>
+                sequence (map putStrLn (reverse $ evalState (s_parser tokenisedContents []) SEState{string=" ",cursor=1,marker='^'})) >>
                 return ())
 
 s_parser :: [[String]] -> OutputState -> State SEState OutputState
 s_parser [] outstate =
     return outstate
-s_parser ((w:[]):ys) outstate =
-    if w == "ini" then
+s_parser ((w:[]):ys) outstate
+    | w == "ini" = 
         return $ "[Bad command: stred cannot be initialised with blank string]":[]
-    else if w == "out" then
-        s_parser ys outstate
-    else if w == "del" then
+    | w == "out" = 
+        Control.Monad.State.get >>= \SEState{string=s,cursor=c,marker=m} ->
+        s_parser ys ((cursorMark c m):s:outstate)
+    | w == "del" =
         s_del >> (s_parser ys outstate)
-    else
+    | otherwise =
+        s_parser ys (("[Invalid instruction: " ++ w ++ "]"):outstate)
+s_parser ((w:x:[]):ys) outstate
+    | w == "ini" =
+        s_ini x >> (s_parser ys outstate)
+    | w == "cur" =
+        s_changeCursor (head x) >> (s_parser ys outstate)
+    | w == "mov" && x == "l" =
+        s_moveLeft 1 >> (s_parser ys outstate)
+    | w == "mov" && x == "r" =
+        s_moveRight 1 >> (s_parser ys outstate)
+    | w == "del" =
+        let
+            n = (readMaybe x :: Maybe Int)
+        in
+            if (n /= Nothing) then
+                s_deleteN (fromJust n) >> (s_parser ys outstate)
+            else
+                s_parser ys ("[Invalid non-numeric argument to 'del', skipping this line]":outstate)
+    | otherwise =
+        s_parser ys (("[Invalid instruction: " ++ w ++ "]"):outstate)
+s_parser ((w:x:xs):ys) outstate
+    | w == "ini" =
+        s_ini (foldl (++) x ((" "++)<$>xs)) >> s_parser ys outstate
+    | w == "mov" && x == "l" = 
+        let 
+            n = (readMaybe (xs!!0) :: Maybe Int)
+        in
+            if (n /= Nothing) then
+                s_moveLeft (fromJust n) >> s_parser ys outstate
+            else
+                s_parser ys ("[Invalid non-numeric argument to 'mov l', skipping this line]":outstate)
+    | w == "mov" && x == "r" = 
+        let 
+            n = (readMaybe (xs!!0) :: Maybe Int)
+        in
+            if (n /= Nothing) then
+                s_moveRight (fromJust n) >> s_parser ys outstate
+            else
+                s_parser ys ("[Invalid non-numeric argument to 'mov r', skipping this line]":outstate)
+    | w == "ins" =
+        s_ins (foldl (++) x ((" "++)<$>xs)) >> s_parser ys outstate
+    | w == "ina" =
+        s_ina (foldl (++) x ((" "++)<$>xs)) >> s_parser ys outstate
+    | otherwise =
         s_parser ys (("[Invalid instruction: " ++ w ++ "]"):outstate)
      
 
