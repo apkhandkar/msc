@@ -17,6 +17,7 @@ module SELib
       moveRight,
       s_moveRight,
       cursorMark,
+      s_cursorMark,
       changeCursor,
       s_changeCursor,
       tokenise ) where
@@ -157,6 +158,11 @@ s_changeCursor m =
 
 cursorMark :: Int -> Char -> String
 cursorMark n c = (take (n-1) $ repeat ' ') ++ c:[]
+
+s_cursorMark :: State SEState String
+s_cursorMark =
+    get >>= \SEState{string=_,cursor=c,marker=m} ->
+    return $ (take (c-1) $ repeat ' ') ++ m:[]
 
 -- miscellaneous functions
  
