@@ -9,6 +9,8 @@ module SELib
       deleteAt,
       moveLeft,
       moveRight,
+      output,
+      foo,
       cursorMark,
       s_cursorMark,
       changeCursor,
@@ -109,6 +111,16 @@ s_cursorMark :: State SEState String
 s_cursorMark =
     get >>= \SEState{string=_,cursor=c,marker=m} ->
     return $ (take (c-1) $ repeat ' ') ++ m:[]
+
+output :: State SEState (IO ())
+output =
+    get >>= \SEState{string=s,cursor=c,marker=m} ->
+    return $
+        putStrLn s >>
+        putStrLn (cursorMark c m)
+
+foo :: State SEState (IO ())
+foo = return $ putStrLn "wow"
 
 -- miscellaneous functions
  
