@@ -5,6 +5,9 @@ import SETypes
 import Text.Read
 import Data.Maybe
 import Control.Monad.State as S
+import Control.Monad.Reader
+
+type Marker = Char
 
 main :: IO ()
 main =
@@ -16,6 +19,10 @@ main =
                 sequence 
                 (map putStrLn (reverse $ evalState (parser tokenisedContents []) SEState{string=" ",cursor=1,marker='^'})) >>
                 return ())
+
+rParser :: [[String]] -> OutputState -> StateT SEState (Reader Marker) OutputState
+rParser _ outstate =
+    return outstate
 
 parser :: [[String]] -> OutputState -> State SEState OutputState
 parser [] outstate =
