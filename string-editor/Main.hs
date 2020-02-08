@@ -17,7 +17,6 @@ main =
                 (map putStrLn (reverse $ evalState (parser tokenisedContents []) SEState{string=" ",cursor=1,marker='^'})) >>
                 return ())
 
-
 parser :: [[String]] -> OutputState -> State SEState OutputState
 parser [] outstate =
     return outstate
