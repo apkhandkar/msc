@@ -4,8 +4,7 @@ module SETypes
 
 data SEState = SEState {
     string :: [Char],
-    cursor :: Int,
-    marker :: Char }
+    cursor :: Int }
     deriving (Show, Ord, Eq, Read)
 
 type OutputState = [String]
