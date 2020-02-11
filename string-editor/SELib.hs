@@ -1,14 +1,21 @@
 module SELib
     ( ini,
+      ini',
       ins,
+      ins',
       ina,
+      ina',
       insertAt,
       insertAfter,
       deleteN,
+      deleteN',
       del,
+      del',
       deleteAt,
       moveLeft,
+      moveLeft',
       moveRight,
+      moveRight',
       output,
       foo,
       cursorMark,
@@ -19,12 +26,19 @@ module SELib
 import SETypes
 import Data.List
 import Control.Monad.State
+import Control.Monad.RWS
+
+type Marker = Char
 
 -- initialise (ini)
 
 ini :: String -> State SEState ()
 ini i =
     state $ \_ -> ((), SEState{string=i,cursor=(length i),marker='^'})
+
+ini' :: String -> RWS Marker [String] SEState' ()
+ini' i =
+    state $ \_ -> ((), SEState'{string'=i,cursor'=(length i)})
 
 -- insert at location (ins)
 
@@ -40,6 +54,10 @@ ins :: String -> State SEState ()
 ins s0 = 
     state $ \SEState{string=s,cursor=c,marker=m} -> ((), SEState{string=(insertAt c s0 s),cursor=(c + length s0),marker=m})
 
+ins' :: String -> RWS Marker [String] SEState' ()
+ins' s0 = 
+    state $ \SEState'{string'=s,cursor'=c} -> ((), SEState'{string'=(insertAt c s0 s),cursor'=(c + length s0)})
+
 -- insert after location (ina)
 
 insertAfter :: Int -> [Char] -> [Char] -> [Char]
@@ -52,6 +70,10 @@ insertAfter n s0 s1 = pre ++ s1 ++ post
 ina :: String -> State SEState ()
 ina s0 =
     state $ \SEState{string=s,cursor=c,marker=m} -> ((), SEState{string=(insertAfter c s s0),cursor=(c + length s0),marker='^'})
+
+ina' :: String -> RWS Marker [String] SEState' ()
+ina' s0 =
+    state $ \SEState'{string'=s,cursor'=c} -> ((), SEState'{string'=(insertAfter c s s0),cursor'=(c + length s0)})
 
 -- delete (del)
 
@@ -70,12 +92,27 @@ del =
         then put SEState{string=(deleteAt c s),cursor=(c-1),marker=m}
         else put SEState{string=(deleteAt c s),cursor=c,marker=m}
 
+del' :: RWS Marker [String] SEState' ()
+del' =
+    get >>= \SEState'{string'=s,cursor'=c} ->
+    if c == (length s)
+        then put SEState'{string'=(deleteAt c s),cursor'=(c-1)}
+        else put SEState'{string'=(deleteAt c s),cursor'=c}
+
 deleteN :: Int -> State SEState ()
 deleteN 0 =
-    state $ \s -> ((), s)
+    return ()
 deleteN n =
-    (state $ \s -> ((), snd $ runState del s)) >>
+    del >>
     deleteN (n-1)
+
+
+deleteN' :: Int -> RWS Marker [String] SEState' ()
+deleteN' 0 =
+    return ()
+deleteN' n =
+    del' >>
+    deleteN' (n-1)
 
 -- move left/right (mov l/r)
 
@@ -88,12 +125,28 @@ moveLeft n =
             then put SEState{string=s,cursor=1,marker=m}
             else put SEState{string=s,cursor=(c-n),marker=m}
      
+moveLeft' :: Int -> RWS Marker [String] SEState' ()
+moveLeft' n =
+    get >>= \i@SEState'{string'=s,cursor'=c} ->
+    if n==0
+        then put i
+        else if (c-n) < 0
+            then put SEState'{string'=s,cursor'=1}
+            else put SEState'{string'=s,cursor'=(c-n)}
+
 moveRight :: Int -> State SEState ()
 moveRight n =
     get >>= \i@SEState{string=s,cursor=c,marker=m} ->
     if (c+n) > (length s)
         then put SEState{string=s,cursor=(length s),marker=m}
         else put SEState{string=s,cursor=(c+n),marker=m}
+
+moveRight' :: Int -> RWS Marker [String] SEState' ()
+moveRight' n =
+    get >>= \i@SEState'{string'=s,cursor'=c} ->
+    if (c+n) > (length s)
+        then put SEState'{string'=s,cursor'=(length s)}
+        else put SEState'{string'=s,cursor'=(c+n)}
 
 -- change cursor character
 
