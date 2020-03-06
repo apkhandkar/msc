@@ -1,44 +1,32 @@
 module SELib
     ( ini,
-      ini',
       ins,
-      ins',
       ina,
-      ina',
       insertAt,
       insertAfter,
       deleteN,
-      deleteN',
       del,
-      del',
       deleteAt,
       moveLeft,
-      moveLeft',
       moveRight,
-      moveRight',
-      output,
-      foo,
       cursorMark,
-      s_cursorMark,
-      changeCursor,
-      tokenise ) where
+      tokenise,
+      generateOutput,
+      runParser ) where
 
 import SETypes
 import Data.List
 import Control.Monad.State
 import Control.Monad.RWS
+import Control.Monad.Reader
+import Control.Monad.Writer
 
-type Marker = Char
 
 -- initialise (ini)
 
-ini :: String -> State SEState ()
+ini :: String -> StateT SEState (WriterT [Output] (Reader Char)) ()
 ini i =
-    state $ \_ -> ((), SEState{string=i,cursor=(length i),marker='^'})
-
-ini' :: String -> RWS Marker [String] SEState' ()
-ini' i =
-    state $ \_ -> ((), SEState'{string'=i,cursor'=(length i)})
+    state $ \_ -> ((), SEState{string=i,cursor=(length i)})
 
 -- insert at location (ins)
 
@@ -50,13 +38,9 @@ insertAt n s0 [] =
 insertAt n s0 (x:xs) =
     x:(insertAt (n-1) s0 xs)
 
-ins :: String -> State SEState ()
+ins :: String -> StateT SEState (WriterT [Output] (Reader Char)) ()
 ins s0 = 
-    state $ \SEState{string=s,cursor=c,marker=m} -> ((), SEState{string=(insertAt c s0 s),cursor=(c + length s0),marker=m})
-
-ins' :: String -> RWS Marker [String] SEState' ()
-ins' s0 = 
-    state $ \SEState'{string'=s,cursor'=c} -> ((), SEState'{string'=(insertAt c s0 s),cursor'=(c + length s0)})
+    state $ \SEState{string=s,cursor=c} -> ((), SEState{string=(insertAt c s0 s),cursor=(c + length s0)})
 
 -- insert after location (ina)
 
@@ -67,13 +51,9 @@ insertAfter n s0 s1 = pre ++ s1 ++ post
         post = snd splits0
         splits0 = splitAt n s0
 
-ina :: String -> State SEState ()
+ina :: String -> StateT SEState (WriterT [Output] (Reader Char)) ()
 ina s0 =
-    state $ \SEState{string=s,cursor=c,marker=m} -> ((), SEState{string=(insertAfter c s s0),cursor=(c + length s0),marker='^'})
-
-ina' :: String -> RWS Marker [String] SEState' ()
-ina' s0 =
-    state $ \SEState'{string'=s,cursor'=c} -> ((), SEState'{string'=(insertAfter c s s0),cursor'=(c + length s0)})
+    state $ \SEState{string=s,cursor=c} -> ((), SEState{string=(insertAfter c s s0),cursor=(c + length s0)})
 
 -- delete (del)
 
@@ -85,95 +65,42 @@ deleteAt n [] =
 deleteAt n (x:xs) =
     (x:(deleteAt (n-1) xs))
 
-del :: State SEState ()
-del = 
-    get >>= \SEState{string=s,cursor=c,marker=m} ->
+del :: StateT SEState (WriterT [Output] (Reader Char)) ()
+del =
+    get >>= \SEState{string=s,cursor=c} ->
     if c == (length s)
-        then put SEState{string=(deleteAt c s),cursor=(c-1),marker=m}
-        else put SEState{string=(deleteAt c s),cursor=c,marker=m}
+        then put SEState{string=(deleteAt c s),cursor=(c-1)}
+        else put SEState{string=(deleteAt c s),cursor=c}
 
-del' :: RWS Marker [String] SEState' ()
-del' =
-    get >>= \SEState'{string'=s,cursor'=c} ->
-    if c == (length s)
-        then put SEState'{string'=(deleteAt c s),cursor'=(c-1)}
-        else put SEState'{string'=(deleteAt c s),cursor'=c}
-
-deleteN :: Int -> State SEState ()
+deleteN :: Int -> StateT SEState (WriterT [Output] (Reader Char)) ()
 deleteN 0 =
     return ()
 deleteN n =
     del >>
     deleteN (n-1)
 
-
-deleteN' :: Int -> RWS Marker [String] SEState' ()
-deleteN' 0 =
-    return ()
-deleteN' n =
-    del' >>
-    deleteN' (n-1)
-
 -- move left/right (mov l/r)
 
-moveLeft :: Int -> State SEState ()
+moveLeft :: Int -> StateT SEState (WriterT [Output] (Reader Char)) ()    
 moveLeft n =
-    get >>= \i@SEState{string=s,cursor=c,marker=m} ->
+    get >>= \i@SEState{string=s,cursor=c} ->
     if n==0
         then put i
         else if (c-n) < 0
-            then put SEState{string=s,cursor=1,marker=m}
-            else put SEState{string=s,cursor=(c-n),marker=m}
-     
-moveLeft' :: Int -> RWS Marker [String] SEState' ()
-moveLeft' n =
-    get >>= \i@SEState'{string'=s,cursor'=c} ->
-    if n==0
-        then put i
-        else if (c-n) < 0
-            then put SEState'{string'=s,cursor'=1}
-            else put SEState'{string'=s,cursor'=(c-n)}
+            then put SEState{string=s,cursor=1}
+            else put SEState{string=s,cursor=(c-n)}
 
-moveRight :: Int -> State SEState ()
+moveRight :: Int -> StateT SEState (WriterT [Output] (Reader Char)) ()
 moveRight n =
-    get >>= \i@SEState{string=s,cursor=c,marker=m} ->
+    get >>= \i@SEState{string=s,cursor=c} ->
     if (c+n) > (length s)
-        then put SEState{string=s,cursor=(length s),marker=m}
-        else put SEState{string=s,cursor=(c+n),marker=m}
-
-moveRight' :: Int -> RWS Marker [String] SEState' ()
-moveRight' n =
-    get >>= \i@SEState'{string'=s,cursor'=c} ->
-    if (c+n) > (length s)
-        then put SEState'{string'=s,cursor'=(length s)}
-        else put SEState'{string'=s,cursor'=(c+n)}
-
--- change cursor character
-
-changeCursor :: Char -> State SEState ()
-changeCursor m =
-    get >>= \SEState{string=s,cursor=c,marker=_} ->
-    put SEState{string=s,cursor=c,marker=m}
+        then put SEState{string=s,cursor=(length s)}
+        else put SEState{string=s,cursor=(c+n)}
 
 -- generate marker line
 
 cursorMark :: Int -> Char -> String
 cursorMark c m = (take (c-1) $ repeat ' ') ++ m:[]
-
-s_cursorMark :: State SEState String
-s_cursorMark =
-    get >>= \SEState{string=_,cursor=c,marker=m} ->
-    return $ (take (c-1) $ repeat ' ') ++ m:[]
-
-output :: State SEState (IO ())
-output =
-    get >>= \SEState{string=s,cursor=c,marker=m} ->
-    return $
-        putStrLn s >>
-        putStrLn (cursorMark c m)
-
-foo :: State SEState (IO ())
-foo = return $ putStrLn "wow"
 
 -- miscellaneous functions
  
@@ -182,3 +109,24 @@ tokenise _ [] = [[]]
 tokenise d li = 
     map (takeWhile (/= d) . tail)
         (filter (isPrefixOf [d]) (tails (d : li)))
+
+genOutputString :: Output -> String
+genOutputString (Output (SEState{string=s,cursor=c},m)) =
+    s ++ "\n" ++ (cursorMark c m)
+genOutputString (Error s) =
+    s
+
+generateOutput :: [Output] -> [String]
+generateOutput [] =
+    []
+generateOutput (o:[]) =
+    (genOutputString o):[]
+generateOutput (o:xs) =
+    (genOutputString o):(generateOutput xs) 
+
+runParser :: ([[String]] -> StateT SEState (WriterT [Output] (Reader Char)) ()) 
+    -> [[String]] 
+    -> Marker 
+    -> SEState 
+    -> [Output]
+runParser f c r s = (\((_,_),c) -> c) $ runReader (runWriterT (runStateT (f c) s)) r

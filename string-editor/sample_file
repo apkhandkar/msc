@@ -1,4 +1,4 @@
-ini Hello world
+ini Hello world, today is a good day!
 out
 ina This was added
 out
@@ -12,4 +12,5 @@ ins also, I will add this
 out
 mov r 3
 out
-mov l askme
+del 3
+out

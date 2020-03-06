@@ -1,0 +1,13 @@
+ini This is a sentence
+out
+mov l 5
+out
+ina something was added
+out
+del 4
+out
+cur %
+out
+texmex
+ina Now we add something more
+out
