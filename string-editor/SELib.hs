@@ -11,6 +11,7 @@ module SELib
       moveRight,
       cursorMark,
       tokenise,
+      genOutputString,
       generateOutput,
       runParser ) where
 
@@ -115,6 +116,8 @@ genOutputString (Output (SEState{string=s,cursor=c},m)) =
     s ++ "\n" ++ (cursorMark c m)
 genOutputString (Error s) =
     s
+genOutputString NoOutput =
+    "This line has no output"
 
 generateOutput :: [Output] -> [String]
 generateOutput [] =
