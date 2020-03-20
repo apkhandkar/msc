@@ -2,7 +2,7 @@ ini This is a sentence
 out
 mov l 5
 out
-ina something was added
+ina somethi\ng was added
 out
 del 4
 out

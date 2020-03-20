@@ -3,6 +3,7 @@ out
 ina This was added
 out
 mov l 5
+mov r haha
 out
 ins also, this was added!
 out
