@@ -19,7 +19,8 @@ instance Semigroup (LZ a) where
     _                   <> _ = Snag
 
 instance Monoid (LZ a) where
-    mempty = Zipper ([], []) 
+    mempty  = Zipper ([], []) 
+    mappend = (<>)
 
 instance Functor LZ where
     f   `fmap`  (Zipper (li, il))   = Zipper (f <$> li, f <$> il)
